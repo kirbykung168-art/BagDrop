@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.fontenv/
+.fontcache/
+temporary screenshots/
+.DS_Store
+*.log
+
+# duplicate of CLAUDE.md, kept locally only
+CLAUDE (1).md

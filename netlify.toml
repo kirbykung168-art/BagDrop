@@ -1,0 +1,25 @@
+# Netlify deployment. The site is pre-built static HTML; there is no runtime.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# The bare domain resolves to the default language (x-default = English).
+[[redirects]]
+  from = "/"
+  to = "/en/"
+  status = 301
+  force = true
+
+# Per-language 404s, so a Thai visitor gets the Thai page.
+[[redirects]]
+  from = "/th/*"
+  to = "/th/404.html"
+  status = 404
+[[redirects]]
+  from = "/zh/*"
+  to = "/zh/404.html"
+  status = 404
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
