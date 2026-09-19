@@ -73,6 +73,16 @@ export default {
   },
 
   diagrams: {
+    /* Alt text for the illustrations in src/content/images.mjs. */
+    images: {
+      tag: 'ILLUSTRATION',
+      hero: 'Illustration: a traveller with a teal suitcase and her phone beside a BagDrop locker bank. One locker door is open.',
+      stepScan: 'Illustration: a traveller holds her phone up to the locker terminal to scan the QR code.',
+      stepPay: 'Illustration: she chooses a locker and pays on the terminal screen.',
+      stepStore: 'Illustration: she slides her suitcase into the open locker.',
+      stepCollect: 'Illustration: a traveller lifts his suitcase out of the locker he has reopened.',
+      venueFloor: 'Illustration: a BagDrop locker bank on a shopping-centre floor, between planters and seating, as shoppers pass.',
+    },
     locker: {
       aria: 'Illustrative isometric drawing of a BagDrop locker bank: twenty large lockers, a payment terminal, and one open door with a suitcase inside.',
       wordmark: 'BagDrop',
@@ -136,7 +146,6 @@ export default {
       openLocker: 'Open locker',
     },
     profile: { label: 'COMPANY PROFILE · {year}', title: 'Self-service luggage storage for shopping centres' },
-    portrait: 'Portrait · founder to supply',
   },
 
   /* ------------------------------------------------------------ HOME */
@@ -155,11 +164,11 @@ export default {
       { h: 'Monitored 24 hours', hShort: 'Monitored 24 h', s: 'Every door, every lock', icon: 'eye' },
     ],
     statement: 'Hands free in Bangkok. Leave the bag, keep the day.',
-    statementTag: 'BagDrop · {companyTh}',
+    statementTag: 'BagDrop · {company}',
 
     pricing: {
       eyebrow: 'Pricing',
-      h2: 'One rate. Published, not negotiated.',
+      h2: 'One simple rate.',
       perHour: 'Per hour',
       perHourNote: 'Charged per started hour.',
       dailyMax: 'Daily maximum',
@@ -336,7 +345,7 @@ export default {
     description:
       'BagDrop costs {hour} per hour, capped at {cap} per calendar day. Pay by card or PromptPay, never cash. A receipt for every use, refunds if a locker fails.',
     eyebrow: 'Pricing',
-    h1: 'One rate at every location. Published, not negotiated.',
+    h1: 'One simple rate, at every location.',
     perHour: 'Per hour',
     maxPerDay: 'Maximum per day',
     how: {

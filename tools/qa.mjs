@@ -82,8 +82,24 @@ head('§6  No usage numbers, reviews, venue names or photos');
   }
   hits.length ? hits.forEach(bad) : ok('no banned venue names, stats, testimonials or leaked placeholder markers');
 
-  const imgs = [...docs].flatMap(([p, h]) => [...h.matchAll(/<img\b[^>]*>/g)].map((m) => `${p}: ${m[0]}`));
-  imgs.length ? imgs.forEach(bad) : ok('no <img> anywhere: illustrations are inline SVG, no photography');
+  // Images are the handoff illustrations only: our own files, sized so nothing
+  // shifts, lazy unless marked as the hero, and every file really on disk.
+  const imgBad = [];
+  let imgCount = 0;
+  for (const [p, h] of docs) for (const [tag] of h.matchAll(/<img\b[^>]*>/g)) {
+    imgCount++;
+    const at = (n) => (tag.match(new RegExp(`\\b${n}="([^"]*)"`)) || [])[1];
+    if (!/^\/img\/[\w-]+\.webp$/.test(at('src') || '')) imgBad.push(`${p} image not from /img/: ${at('src')}`);
+    if (at('alt') === undefined) imgBad.push(`${p} ${at('src')} has no alt attribute`);
+    if (!at('width') || !at('height')) imgBad.push(`${p} ${at('src')} has no width/height (layout shift)`);
+    if (!/loading="lazy"|fetchpriority="high"/.test(tag)) imgBad.push(`${p} ${at('src')} is neither lazy nor the hero`);
+    for (const c of (at('srcset') || '').split(',').map((x) => x.trim().split(' ')[0]).filter(Boolean)) {
+      const f = join(ROOT, 'static', c);
+      if (!existsSync(f)) imgBad.push(`${p} srcset file missing: ${c}`);
+      else if ((await stat(f)).size > 150 * 1024) imgBad.push(`${c} is over 150 KB`);
+    }
+  }
+  imgBad.length ? [...new Set(imgBad)].slice(0, 10).forEach(bad) : ok(`${imgCount} <img> tags: all local WebP illustrations with alt, dimensions and lazy loading`);
 }
 
 /* ---- 3. Status line ---------------------------------------------------- */
@@ -287,7 +303,7 @@ head('§8  No third-party scripts, no render-blocking resources');
 }
 
 /* ---- 11. Page weight ---------------------------------------------------- */
-head('§8  Page weight (Home under ~700 KB incl. SVGs and fonts; diagrams under 40 KB)');
+head('§8  Page weight (Home under ~700 KB incl. SVGs, images and fonts; diagrams under 40 KB)');
 {
   const fsize = async (f) => (await stat(join(ROOT, 'static/fonts', f))).size;
   const fontBytes = {
@@ -297,10 +313,16 @@ head('§8  Page weight (Home under ~700 KB incl. SVGs and fonts; diagrams under 
   let worst = 0, worstName = '';
   for (const [p, html] of pages) {
     const lang = p.split('/')[1];
-    const total = rawBytes.get(p) + (fontBytes[lang] || fontBytes.en) + (await fsize('sc-sample-500.woff2'));
+    // Worst case for images: every one on the page, at its largest size.
+    let imgBytes = 0;
+    for (const [, srcset] of html.matchAll(/<img\b[^>]*\bsrcset="([^"]*)"/g)) {
+      const largest = srcset.split(',').pop().trim().split(' ')[0];
+      imgBytes += (await stat(join(ROOT, 'static', largest))).size;
+    }
+    const total = rawBytes.get(p) + imgBytes + (fontBytes[lang] || fontBytes.en) + (await fsize('sc-sample-500.woff2'));
     if (total > worst) { worst = total; worstName = p; }
   }
-  worst <= 700 * 1024 ? ok(`heaviest page ${worstName} = ${(worst / 1024).toFixed(1)} KB incl. fonts (budget 700 KB)`) : bad(`${worstName} = ${(worst / 1024).toFixed(1)} KB exceeds 700 KB`);
+  worst <= 700 * 1024 ? ok(`heaviest page ${worstName} = ${(worst / 1024).toFixed(1)} KB incl. fonts and images (budget 700 KB)`) : bad(`${worstName} = ${(worst / 1024).toFixed(1)} KB exceeds 700 KB`);
   const gz = Math.max(...pages.map(([, h]) => gzipSync(Buffer.from(h)).length));
   ok(`heaviest HTML gzipped: ${(gz / 1024).toFixed(1)} KB`);
   let bigSvg = [];

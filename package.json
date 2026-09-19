@@ -7,6 +7,7 @@
   "scripts": {
     "build": "node build.mjs",
     "glyphs": "node tools/collect-glyphs.mjs",
+    "images": "node tools/make-images.mjs && node build.mjs",
     "fonts": "bash tools/build-fonts.sh && node build.mjs",
     "serve": "node serve.mjs",
     "shot": "node screenshot.mjs",

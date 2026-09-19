@@ -92,16 +92,29 @@ State only what is verifiable: the centre, the floor, the opening hours.
 
 ## 5. Photographs and the founder's portrait
 
-The site currently contains **no raster images** except the OG cards, by
-instruction. When a real portrait or unit photograph exists:
+The only raster images are the OG cards and the **handoff illustrations**: drawn
+scenes of the planned unit, each labelled "Illustration" on the page because no
+unit is installed yet. Which drawing fills which slot, and how it is cropped, is
+one table in `src/content/images.mjs`; alt text is in the copy modules under
+`diagrams.images`.
 
-1. Put it in `static/`, exported to AVIF or WebP.
-2. Add it with explicit dimensions and real alt text. For the portrait, replace
-   the `.portrait` frame in `pages.mjs → companyPage`.
-3. `npm run check` asserts no `<img>` exists — a guard against stock imagery,
-   not real photography — so remove that assertion in `tools/qa.mjs`.
+To change or add one:
 
-Never use stock photography, AI-generated images or photorealistic renders.
+1. Edit the slot in `src/content/images.mjs` (`src`, `crop` in source pixels,
+   `widths`).
+2. `npm run images` writes the WebP files to `static/img/`. Sources are read
+   from `~/Downloads/bagdrop-handoff`, or set `HANDOFF=/path/to/folder`.
+3. Place it with `illustration('<slot>', …)` from `components.mjs`, which adds
+   `srcset`, dimensions and lazy loading.
+4. `npm run check` fails any `<img>` that is not a local `/img/*.webp` with alt,
+   dimensions and lazy loading, or that is over 150 KB.
+
+When a real portrait or unit photograph exists it goes through the same table.
+For the portrait, replace `monogram()` in `pages.mjs → companyPage`.
+
+Never use stock photography or photorealistic renders, and never present a
+drawing as a photograph of an installed unit. Do not use handoff images 13–16:
+they show parcel collection under another brand.
 
 ## 6. The company profile PDF
 

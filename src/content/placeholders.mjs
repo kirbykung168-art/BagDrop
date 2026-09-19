@@ -74,7 +74,7 @@ export const placeholders = {
     year: 2026,
   },
 
-  // PLACEHOLDER — director portrait. Empty frame until the founder supplies one.
+  // PLACEHOLDER — director portrait. A locker-door monogram stands in until the founder supplies one.
   portrait: null,
 
   // PLACEHOLDER — payment marks are typed stand-ins until official Visa,
