@@ -41,8 +41,9 @@ export const company = {
   email: 'hello@bagdrop.co.th',
 
   // PLACEHOLDER — client to supply the LINE Official Account ID.
-  lineOaId: '@bagdrop',
-  lineUrl: 'https://line.me/R/ti/p/@bagdrop',
+  // The account the official QR (brand_assets/line-qr.jpeg → lin.ee/sl6Wpin) opens.
+  lineOaId: '@130keaga',
+  lineUrl: 'https://line.me/R/ti/p/@130keaga',
 
   // VAT: application in progress. No number is displayed. Client to confirm wording.
   vatPending: true,

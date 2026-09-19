@@ -14,7 +14,7 @@ Status: 🔴 blocks launch · 🟠 blocks a page · 🟢 supplied
 | # | Input | Blocks | Where it lives | Status |
 |---|---|---|---|---|
 | 1 | **Domain email address** (not Gmail) | Footer on every page; Company; Venue Partners | `src/content/facts.mjs` → `company.email` | 🔴 placeholder `hello@bagdrop.co.th` |
-| 2 | **LINE Official Account ID** | Header + footer on every page (§8) | `src/content/facts.mjs` → `company.lineOaId`, `company.lineUrl` | 🔴 placeholder `@bagdrop` |
+| 2 | **LINE Official Account ID** | Header + footer on every page (§8) | `src/content/facts.mjs` → `company.lineOaId`, `company.lineUrl` | 🟢 supplied 20 Sep 2026: `@130keaga`, taken from the official QR (`brand_assets/line-qr.jpeg` → lin.ee/sl6Wpin). Replace if a premium ID such as `@bagdrop` is bought later |
 | 3 | **Official LINE button asset** | Header, footer, sticky bar and contact bands | currently a LINE-green pill with a chat icon, `.btn--line` | 🟠 not supplied; current button follows the mockups |
 | 4 | **Legal review of Terms and PDPA policy** | `/legal/` in both languages | `src/content/copy/{en,th}.mjs` → `legal` | 🔴 drafted, unreviewed |
 | 5 | **Liability limit per locker** | Home rules; Legal §3 | `placeholders.liabilityThb` | 🔴 THB 5,000 placeholder from the design (see CONTENT_TODO.md) |

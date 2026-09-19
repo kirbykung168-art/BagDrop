@@ -38,6 +38,8 @@ export default {
     venueBrief: 'Read the venue brief →',
     profilePdf: 'Company profile (PDF)',
     profilePdfSize: 'Company profile (PDF, {size})',
+    lineQrAlt: 'QR code: add BagDrop on LINE, {line}',
+    lineQrHint: 'Scan with your phone to add us on LINE',
     downloadPdf: 'Download PDF · {size}',
     requestPrint: 'Request a printed copy',
     terms: 'Read the terms of use →',
@@ -76,7 +78,7 @@ export default {
     /* Alt text for the illustrations in src/content/images.mjs. */
     images: {
       tag: 'ILLUSTRATION',
-      hero: 'Illustration: a traveller with a teal suitcase and her phone beside a BagDrop locker bank. One locker door is open.',
+      hero: 'Illustration: a traveller at an open BagDrop locker with her teal suitcase, beside the touchscreen terminal on a shopping-centre floor.',
       stepStart: 'Illustration: a traveller taps the touchscreen on the locker terminal to choose a locker.',
       stepPay: 'Illustration: she holds her phone to the terminal to pay by PromptPay from her banking app.',
       stepStore: 'Illustration: she slides her suitcase into the open locker.',

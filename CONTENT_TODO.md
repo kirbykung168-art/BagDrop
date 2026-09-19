@@ -29,7 +29,7 @@ the copy string to edit is named too.
 
 These are tracked in `docs/INPUTS-REQUIRED.md` and are not invented anywhere on the site:
 
-- Domain email address (`hello@bagdrop.co.th` is used throughout) and the LINE Official Account ID (`@bagdrop`).
+- Domain email address (`hello@bagdrop.co.th` is used throughout). The LINE Official Account is now the real one, `@130keaga`, from the official QR in `brand_assets/line-qr.jpeg`.
 - Native Thai review of every string in `src/content/copy/th.mjs` (see `docs/th-copy-sheet.md`).
 - Legal review of the terms and PDPA notice, including the liability limit and prohibited-items list above.
 - Confirmation that the DBD DataWarehouse record is live, then set `company.dbdRecordLive = true` in `facts.mjs`.

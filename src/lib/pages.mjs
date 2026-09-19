@@ -40,7 +40,7 @@ export function home(lang) {
   <div class="chip"><span class="num">${esc(m(price.hourly))}</span><span class="small">${esc(c.ui.perHour)}</span><span class="chip__sep" aria-hidden="true"></span><span class="num"><span class="hide-m">${esc(m(price.dailyCap))}</span><span class="hide-d">${thb(price.dailyCap)}</span></span><span class="small"><span class="hide-m">${esc(c.ui.maxPerDay)}</span><span class="hide-d">${esc(c.ui.maxPerDayShort)}</span></span></div>
   <div class="btn-row">${btn(t(c.ui.lineChat), company.lineUrl, 'primary', { rel: 'noopener' })}${btn(c.ui.howItWorks, hrefFor(lang, 'how'), 'outline')}</div>
   <div class="status-wrap"><span class="hide-m">${statusLine(c.statusNow)}</span><span class="hide-d">${statusLine(c.statusShort)}</span></div>
-  <div class="fig fig--tall fig--blend">${illustration('hero', { alt: im.hero, tag: im.tag, eager: true, sizes: '(min-width: 64rem) 44vw, 100vw' })}</div>
+  <div class="fig fig--tall fig--cover">${illustration('hero', { alt: im.hero, tag: im.tag, eager: true, sizes: '(min-width: 64rem) 44vw, 100vw' })}</div>
 </div>
 <div class="facts">${facts}</div>`)}</section>`;
 

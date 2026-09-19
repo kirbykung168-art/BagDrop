@@ -2,7 +2,7 @@ import { company, product, site, thb, placeholders } from '../content/facts.mjs'
 import en from '../content/copy/en.mjs';
 import th from '../content/copy/th.mjs';
 import { esc, fill } from './util.mjs';
-import { icon, btn, paymentMarks } from './components.mjs';
+import { icon, btn, paymentMarks, illustration } from './components.mjs';
 
 export const COPY = { en, th };
 export { company, product, site, thb, placeholders, esc, fill };
@@ -140,6 +140,7 @@ function footer(lang, copy) {
         <span class="foot__mark">BagDrop</span>
         <p class="foot__tag">${esc(f.tagline)}</p>
         ${btn(t(copy.ui.lineChatAt), company.lineUrl, 'line', { cls: 'btn--sm', rel: 'noopener' })}
+        <div class="foot__qr hide-m">${illustration('lineQr', { alt: t(copy.ui.lineQrAlt), sizes: '7.5rem' })}<span>${esc(copy.ui.lineQrHint)}</span></div>
       </div>
       <div class="foot__col">
         <span class="foot__h">${esc(f.registered)}</span>

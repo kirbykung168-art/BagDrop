@@ -33,10 +33,10 @@ await mkdir(OUT, { recursive: true });
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: 'new' });
 const page = await browser.newPage();
 
-for (const [slot, { src, crop, widths }] of Object.entries(IMAGES)) {
-  const file = join(SRC, src);
+for (const [slot, { src, crop, widths, quality = QUALITY }] of Object.entries(IMAGES)) {
+  const file = src.startsWith('brand_assets/') ? join(ROOT, src) : join(SRC, src);
   if (!existsSync(file)) { console.error(`missing source: ${file}`); process.exitCode = 1; continue; }
-  const dataUrl = `data:image/png;base64,${(await readFile(file)).toString('base64')}`;
+  const dataUrl = `data:image/${src.endsWith('.png') ? 'png' : 'jpeg'};base64,${(await readFile(file)).toString('base64')}`;
 
   for (const width of widths) {
     const b64 = await page.evaluate(async (dataUrl, crop, width, quality) => {
@@ -53,7 +53,7 @@ for (const [slot, { src, crop, widths }] of Object.entries(IMAGES)) {
       let s = '';
       for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
       return btoa(s);
-    }, dataUrl, crop || null, width, QUALITY);
+    }, dataUrl, crop || null, width, quality);
 
     const buf = Buffer.from(b64, 'base64');
     await writeFile(join(OUT, `${slot}-${width}.webp`), buf);
