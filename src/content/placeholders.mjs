@@ -1,0 +1,88 @@
+/**
+ * placeholders.mjs — every value on the site that the client has not yet
+ * confirmed, in one place (brief §7).
+ *
+ * Each entry is marked PLACEHOLDER so `grep -r PLACEHOLDER src` finds them all,
+ * and CONTENT_TODO.md at the repo root lists where each one appears and what
+ * confirmed information replaces it. Nothing on the rendered page says these
+ * are placeholders: the values below are the ones used in the approved design.
+ */
+
+export const placeholders = {
+  // PLACEHOLDER — payment timing. Design: first hour paid at drop-off, extra time on collection.
+  paymentTiming: {
+    en: { first: 'First hour paid at drop-off', extra: 'Extra time on collection' },
+    th: { first: 'ชั่วโมงแรกชำระตอนฝาก', extra: 'เวลาส่วนเกินชำระตอนรับคืน' },
+  },
+
+  // PLACEHOLDER — billing rule. Design: per started hour; THB 300 cap per calendar day.
+  billing: {
+    perStartedHour: true,
+    capPerCalendarDay: true,
+  },
+
+  // PLACEHOLDER — maximum storage period, then abandoned-property procedure.
+  storage: {
+    maxDays: 3,
+    heldDays: 30,
+  },
+
+  // PLACEHOLDER — locker interior dimensions and load.
+  interior: {
+    widthCm: 60,
+    depthCm: 45,
+    heightCm: 85,
+    maxKg: 32,
+  },
+
+  // PLACEHOLDER — what-fits capacities shown on the Home page tiles.
+  fits: {
+    backpackLitres: 70,
+  },
+
+  // PLACEHOLDER — liability limit per locker.
+  liabilityThb: 5000,
+
+  // PLACEHOLDER — prohibited items (short list for the Home page; full list in Legal).
+  prohibited: {
+    en: ['Hazardous goods', 'Perishables', 'Cash and valuables', 'Animals'],
+    th: ['วัตถุอันตราย', 'ของสด', 'เงินสดและของมีค่า', 'สัตว์'],
+  },
+
+  // PLACEHOLDER — floor plan dimensions, including the customer zone.
+  footprint: {
+    lengthM: 3.4,
+    depthM: 1.8,
+  },
+
+  // PLACEHOLDER — app screens as designed in the phone mockups.
+  app: {
+    bankId: 'BD-01',
+    lockerNo: 12,
+    pin: '4827',
+    available: 14,
+    maskedPhone: '+66 •• ••• 1234',
+    storedFor: { en: '3 h 12 min', th: '3 ชม. 12 นาที' },
+    storedTotal: 200,
+  },
+
+  // PLACEHOLDER — company profile PDF. /company-profile.pdf is a one-page
+  // stand-in; the label states the size the real document is expected to be.
+  profile: {
+    href: '/company-profile.pdf',
+    sizeLabel: '2.4 MB',
+    year: 2026,
+  },
+
+  // PLACEHOLDER — director portrait. Empty frame until the founder supplies one.
+  portrait: null,
+
+  // PLACEHOLDER — payment marks are typed stand-ins until official Visa,
+  // Mastercard and PromptPay assets are supplied and used per brand guidelines.
+  paymentMarks: ['Visa', 'Mastercard', 'PromptPay'],
+
+  // PLACEHOLDER — legal "last updated" date shown on the Legal page.
+  legalUpdated: { en: '19 September 2026', th: '19 กันยายน 2569' },
+};
+
+export default placeholders;

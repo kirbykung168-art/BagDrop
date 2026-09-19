@@ -77,13 +77,16 @@ export const product = {
   },
 };
 
-/** Payment marks. Rendered as text until the client supplies official brand assets. */
+/** Payment marks. Typed stand-ins until official assets arrive — see placeholders.mjs. */
+export { placeholders } from './placeholders.mjs';
 export const paymentMarks = ['Visa', 'Mastercard', 'PromptPay'];
 
 export const site = {
   origin: 'https://bagdrop.co.th',
   defaultLang: 'en', // x-default → /en/ (client decision)
-  langs: ['en', 'th', 'zh'],
+  // English and Thai only (brief §5). Chinese copy stays in src/content/copy/zh.mjs
+  // for when those pages are completed; until then it is neither built nor linked.
+  langs: ['en', 'th'],
 };
 
 /** Formats a THB amount with grouping, for tabular-figure display. */
