@@ -58,7 +58,7 @@ createServer(async (req, res) => {
     // live site breaks it here first.
     'content-security-policy':
       "default-src 'none'; style-src 'unsafe-inline'; font-src 'self'; img-src 'self'; " +
-      "form-action 'none'; frame-ancestors 'none'; base-uri 'none'",
+      "connect-src 'self'; form-action 'none'; frame-ancestors 'none'; base-uri 'none'",
     'cache-control': extname(file) === '.html' ? 'no-cache' : 'public, max-age=31536000, immutable',
   });
   res.end(body);
