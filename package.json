@@ -2,15 +2,16 @@
   "name": "bagdrop-site",
   "version": "1.0.0",
   "private": true,
-  "description": "Static bilingual (EN/TH) + Simplified Chinese website for BagDrop, operated by 8Venture Co., Ltd.",
+  "description": "Static bilingual (EN/TH) website for BagDrop, operated by 8Venture Co., Ltd.",
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
     "glyphs": "node tools/collect-glyphs.mjs",
-    "fonts": "node build.mjs && node tools/collect-glyphs.mjs && bash tools/build-fonts.sh && node build.mjs",
+    "fonts": "bash tools/build-fonts.sh && node build.mjs",
     "serve": "node serve.mjs",
     "shot": "node screenshot.mjs",
-    "check": "node tools/qa.mjs"
+    "check": "node tools/qa.mjs",
+    "lighthouse": "node tools/lighthouse.mjs"
   },
   "devDependencies": {
     "puppeteer-core": "^23.0.0"

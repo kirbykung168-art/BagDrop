@@ -17,7 +17,7 @@ const BASE = process.env.BASE || 'http://localhost:3000';
 const PATHS = [
   '/en/', '/en/how-it-works/', '/en/pricing/', '/en/venue-partners/', '/en/company/', '/en/legal/',
   '/th/', '/th/how-it-works/', '/th/pricing/', '/th/venue-partners/', '/th/company/', '/th/legal/',
-  '/zh/', '/zh/how-it-works/', '/zh/pricing/', '/en/404.html',
+  '/en/404.html', '/th/404.html',
 ];
 // 320px is the narrowest width WCAG 2.2 reflow (1.4.10) requires support for.
 const WIDTHS = [320, 390];
@@ -49,15 +49,15 @@ for (const width of WIDTHS) {
         }
       }
 
-      // §7: touch targets >= 48x48.
-      for (const el of document.querySelectorAll('a[href], button')) {
+      // §3: minimum 44px touch target everywhere.
+      for (const el of document.querySelectorAll('a[href], button, summary')) {
         const b = el.getBoundingClientRect();
         if (b.width === 0 && b.height === 0) continue;
-        if (el.closest('.foot__bottom')) continue;
+        if (el.closest('.foot')) continue; // footer text links sit in running text
         const label = (el.textContent || '').trim().slice(0, 28);
         // Inline links inside running prose are exempt (WCAG 2.5.8 exception).
-        const inProse = !!el.closest('p, li.legal, .legal-sec, .dl__v, address, .foot p');
-        if (b.height < 48 && !inProse) out.small.push(`${label} ${Math.round(b.width)}x${Math.round(b.height)}`);
+        const inProse = !!el.closest('p, .legal-sec, .row__v, .row__p, address, .faq__a');
+        if (b.height < 44 && !inProse) out.small.push(`${label} ${Math.round(b.width)}x${Math.round(b.height)}`);
         if (b.height < 24 && !inProse) out.tiny.push(`${label} ${Math.round(b.height)}px`);
       }
       // A table wider than its wrapper is clipped/side-scrolling. On a phone
@@ -74,9 +74,9 @@ for (const width of WIDTHS) {
 
     const problems = [];
     if (r.overflow) problems.push(`H-SCROLL ${r.overflow.doc}>${r.overflow.vw} [${[...new Set(r.wideEls)].slice(0, 3).join(', ')}]`);
-    if (r.bodyPx < 17) problems.push(`body ${r.bodyPx}px < 17px`);
+    if (r.bodyPx < 16) problems.push(`body ${r.bodyPx}px < 16px`);
     if (r.clipped?.length) problems.push(`CLIPPED TABLE: ${r.clipped.join(', ')}`);
-    if (r.small.length) problems.push(`${r.small.length} target(s) <48px: ${[...new Set(r.small)].slice(0, 3).join(' | ')}`);
+    if (r.small.length) problems.push(`${r.small.length} target(s) <44px: ${[...new Set(r.small)].slice(0, 3).join(' | ')}`);
 
     if (problems.length) { fail++; console.log(`  ✗ ${path}\n      ${problems.join('\n      ')}`); }
     else console.log(`  ✓ ${path}  body ${r.bodyPx}px, no overflow, targets ok`);

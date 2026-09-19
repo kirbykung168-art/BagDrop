@@ -14,7 +14,8 @@ import { dirname, join, relative } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
 import { layout, PAGES, COPY, site, urlFor } from './src/lib/render.mjs';
-import { RENDERERS } from './src/lib/pages.mjs';
+import { RENDERERS, STICKY } from './src/lib/pages.mjs';
+import THAI_NOBREAK from './src/content/thai-nobreak.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 // Output to public/ deliberately: it is the directory Vercel serves by
@@ -28,6 +29,26 @@ const write = async (rel, contents) => {
   await writeFile(out, contents);
   return { rel, bytes: Buffer.byteLength(contents) };
 };
+
+/**
+ * Thai line-breaking. Wraps each listed compound in a nowrap span and keeps a
+ * number with its unit (300 บาท), in text nodes only — never inside a tag, an
+ * attribute, the <title>, an SVG or the JSON-LD — so facts stay byte-identical
+ * and Chrome's Thai dictionary still finds the break opportunities between
+ * words. (Word joiners were tried first: they blind the dictionary entirely.)
+ */
+const COMPOUNDS = [...THAI_NOBREAK].sort((a, b) => b.length - a.length);
+const NB = /(\d)\s(บาท|ชม\.|กก\.|ตร\.ม\.|ลิตร|วัน|ช่อง)/g;
+function bindThai(html) {
+  return html.split(/(<(?:script|style|svg|title)[\s\S]*?<\/(?:script|style|svg|title)>)/).map((part, i) => {
+    if (i % 2) return part;
+    return part.replace(/>([^<]*[\u0E00-\u0E7F][^<]*)</g, (m, text) => {
+      let t = text.replace(NB, '$1\u00A0$2');
+      for (const w of COMPOUNDS) t = t.split(w).join(`<span class="nb">${w}</span>`);
+      return '>' + t + '<';
+    });
+  }).join('');
+}
 
 /** Minify the stylesheet enough to matter, without a dependency. */
 function squeezeCss(css) {
@@ -58,7 +79,7 @@ async function main() {
         site.langs.map((l) => [l, page.langs.includes(l) ? urlFor(l, page.slug) : urlFor(l, '')])
       );
       const canonicalPath = urlFor(lang, page.slug);
-      const html = layout({
+      const html = (lang === 'th' ? bindThai : (x) => x)(layout({
         lang,
         pageKey: page.key,
         main: RENDERERS[page.key](lang),
@@ -66,7 +87,8 @@ async function main() {
         altLinks,
         switchLinks,
         canonicalPath,
-      });
+        sticky: STICKY.has(page.key),
+      }));
       written.push(await write(join(canonicalPath.slice(1), 'index.html'), html));
     }
   }
@@ -74,7 +96,7 @@ async function main() {
   // 404 — one per language, plus a root copy for hosts that serve a single file.
   for (const lang of site.langs) {
     const switchLinks = Object.fromEntries(site.langs.map((l) => [l, `/${l}/404.html`]));
-    const html = layout({
+    const html = (lang === 'th' ? bindThai : (x) => x)(layout({
       lang,
       pageKey: 'notFound',
       main: RENDERERS.notFound(lang),
@@ -82,7 +104,8 @@ async function main() {
       altLinks: {},
       switchLinks,
       canonicalPath: `/${lang}/404.html`,
-    });
+      sticky: false,
+    }));
     written.push(await write(`${lang}/404.html`, html));
     if (lang === site.defaultLang) written.push(await write('404.html', html));
   }
@@ -98,7 +121,7 @@ async function main() {
 <meta http-equiv="refresh" content="0; url=${urlFor(site.defaultLang, '')}">
 </head>
 <body>
-<p><a href="${urlFor('en', '')}">English</a> &middot; <a href="${urlFor('th', '')}">ไทย</a> &middot; <a href="${urlFor('zh', '')}">中文</a></p>
+<p><a href="${urlFor('en', '')}">English</a> &middot; <a href="${urlFor('th', '')}">ไทย</a></p>
 </body>
 </html>
 `;
