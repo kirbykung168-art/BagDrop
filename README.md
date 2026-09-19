@@ -38,6 +38,7 @@ There is **no CMS, no framework and no client-side JavaScript**. `build.mjs` is 
 | `npm run shot -- <url> [label] [mobile\|desktop]` | Screenshot to `temporary screenshots/` |
 | `node tools/audit.mjs` | In-browser check at 320px and 390px: overflow, tap targets, clipped tables |
 | `node tools/copy-sheet.mjs` | Regenerates the Thai and Chinese review sheets |
+| `node tools/verify-headers.mjs` | Loads every page under the production CSP and fails on violations |
 | `node tools/make-assets.mjs` | Regenerates OG cards and PNG icons |
 
 ## Structure
@@ -136,14 +137,46 @@ How that is achieved:
 
 ## Deployment
 
-Pre-built static output. `netlify.toml` is included; any static host works.
+Pre-built static output. **`dist/` is not committed** — the host must run the
+build. It needs only Node; no Python, no network and no browser are required, and
+the webfonts are committed under `public/fonts/`.
 
-- Publish directory: `dist`, build command: `npm run build`
-- `public/_headers` sets HSTS, `X-Content-Type-Options`, `Referrer-Policy`,
-  `Permissions-Policy`, and a CSP of `default-src 'none'` with only inline styles,
-  same-origin fonts and images allowed — the site needs nothing else.
-- Serve `/` as a **301** to `/en/`. `dist/index.html` is a meta-refresh fallback
-  for hosts that cannot express a redirect.
+| Host | Config file | Build command | Output directory |
+|---|---|---|---|
+| **Vercel** | `vercel.json` | `node build.mjs` | `dist` |
+| **Netlify** | `netlify.toml` | `npm run build` | `dist` |
+
+### Vercel
+
+`vercel.json` sets everything, including the security headers — **Vercel ignores
+`public/_headers`, which is Netlify's format.** Import the repository and deploy;
+no dashboard configuration is needed.
+
+If the deployment returns 404 or a blank page, the cause is almost always the
+output directory. Vercel's default for a project with no detected framework is
+`public/`, which here holds only fonts and icons and has **no `index.html`**. In
+*Project → Settings → Build and Deployment*, make sure the **Build Command** and
+**Output Directory** overrides are switched **off** so `vercel.json` applies, or
+set them to `node build.mjs` and `dist`. Dashboard overrides win over
+`vercel.json`, so an old override left from a first attempt will keep breaking it.
+
+### Both hosts
+
+- `/` is a **301** to `/en/` (x-default). `dist/index.html` is a meta-refresh
+  fallback for hosts that cannot express a redirect.
+- Trailing slashes are canonical (`/en/pricing/`), matching the `<link rel=canonical>`
+  in every page.
+- Unmatched URLs return `dist/404.html` with a real 404 status. It is the English
+  404 and carries the language switcher. Netlify additionally serves per-language
+  404s; Vercel would need a rewrite for that, which returns 200 and creates a soft
+  404, so it is deliberately not configured.
+- Headers set HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`,
+  `Permissions-Policy` and a CSP of `default-src 'none'` allowing only inline
+  styles and same-origin fonts and images — the site needs nothing else.
+  `node serve.mjs` sends the identical header set, and
+  `node tools/verify-headers.mjs` loads every page through it and fails on any CSP
+  violation, blocked font or failed request. Run it before changing the policy: a
+  CSP that breaks a page does so silently.
 
 No analytics is installed. If one is added it must be cookieless or gated behind
 consent, and `legal.sections[privacy]` must be updated **first** — the privacy

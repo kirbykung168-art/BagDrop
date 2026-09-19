@@ -51,7 +51,14 @@ createServer(async (req, res) => {
     ...(encoding ? { 'content-encoding': encoding, vary: 'Accept-Encoding' } : {}),
     // Mirror the headers the production host should set (see README).
     'x-content-type-options': 'nosniff',
+    'x-frame-options': 'DENY',
     'referrer-policy': 'strict-origin-when-cross-origin',
+    'permissions-policy': 'geolocation=(), camera=(), microphone=()',
+    // Identical to the policy in vercel.json, so a CSP that would break the
+    // live site breaks it here first.
+    'content-security-policy':
+      "default-src 'none'; style-src 'unsafe-inline'; font-src 'self'; img-src 'self'; " +
+      "form-action 'none'; frame-ancestors 'none'; base-uri 'none'",
     'cache-control': extname(file) === '.html' ? 'no-cache' : 'public, max-age=31536000, immutable',
   });
   res.end(body);
