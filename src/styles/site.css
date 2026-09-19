@@ -132,6 +132,7 @@
 [lang="th"] { font-family: var(--font-thai); letter-spacing: 0; }
 [lang="zh-Hans"] { font-family: 'SC Sample', 'PingFang SC', 'Noto Sans SC', sans-serif; letter-spacing: 0; }
 :lang(en) [lang="th"] { line-height: 1.7; }
+.nb { white-space: nowrap; } /* Thai compounds bound at build time (thai-nobreak.mjs) */
 
 /* ---------- Reset ------------------------------------------------ */
 *, *::before, *::after { box-sizing: border-box; }
@@ -769,6 +770,20 @@ body:has(.stickybar) { padding-bottom: 5.5rem; }
 .toc a { display: flex; align-items: center; min-height: 2.75rem; padding: .375rem 0 .375rem 1rem; border-left: 2px solid var(--line-soft); font-size: .9375rem; color: var(--muted); text-decoration: none; }
 .toc a:hover { color: var(--ink); border-left-color: var(--teal); }
 .toc a:first-of-type { color: var(--ink); border-left-color: var(--teal); font-weight: 600; }
+/* Scroll tracking without JavaScript: each legal section is a view timeline
+   (see pages.mjs → legal) and its link is "on" while the section occupies the
+   band below the header. Unsupported browsers keep the :target fallback. */
+@supports (timeline-scope: --a) {
+  .toc a:first-of-type { color: var(--muted); border-left-color: var(--line-soft); font-weight: 400; }
+  .toc a { animation-name: toc-on; animation-duration: auto; animation-timing-function: linear; animation-fill-mode: none; animation-range: cover 0% cover 100%; }
+  /* The active section is the one crossing a 1px line 12.75rem down: just below
+     where a clicked section lands (scroll-padding 6rem + scroll-margin 6.5rem),
+     so the section you click is the one marked, and while scrolling the mark
+     moves as each heading reaches the top of the viewport. */
+  .legal-sec { view-timeline-inset: 12.75rem calc(100% - 12.75rem - 1px); }
+  .toc a:first-of-type { animation-range: cover -400% cover 100%; }
+  @keyframes toc-on { from, to { color: var(--ink); border-left-color: var(--teal); font-weight: 600; } }
+}
 .legal-sec { display: flex; flex-direction: column; gap: .875rem; padding: 2.5rem 0; border-top: 1px solid var(--line); scroll-margin-top: 6.5rem; }
 .legal-sec:last-child { border-bottom: 1px solid var(--line); }
 .legal-sec h2 { font-size: clamp(1.5rem, 1.3rem + 1vw, 1.875rem); letter-spacing: -.025em; line-height: 1.15; }
@@ -835,7 +850,7 @@ body:has(.stickybar) { padding-bottom: 5.5rem; }
 .foot a:not(.btn) { color: var(--paper); text-decoration: none; }
 .foot a:not(.btn):hover { color: var(--teal-soft); text-decoration: underline; }
 .foot .foot__site a { color: #E6EDEC; }
-.foot__mutedtext a { text-decoration: underline; text-underline-offset: .15em; }
+.foot .foot__mutedtext a { text-decoration: underline; text-underline-offset: .15em; }
 .foot__reg { color: var(--paper); font-variant-numeric: tabular-nums; }
 .foot__bottom { margin-top: 2.5rem; padding-top: 1.75rem; border-top: 1px solid var(--line-deep); display: flex; flex-direction: column; gap: 1rem; }
 @media (min-width: 64rem) { .foot__bottom { flex-direction: row; align-items: center; justify-content: space-between; } }

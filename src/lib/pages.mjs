@@ -355,13 +355,18 @@ export function companyPage(lang) {
 export function legal(lang) {
   const c = COPY[lang], p = c.legal, t = tFor(lang);
 
-  const toc = p.sections.map((s, i) => `<a href="#${s.id}">${i + 1}. ${esc(s.h)}</a>`).join('');
-  const sections = p.sections.map((s, i) => `<section class="legal-sec" id="${s.id}">${eyebrow(t(p.sectionWord, { n: i + 1 }))}<h2>${esc(s.h)}</h2>${s.paras.map((x) => `<p>${esc(t(x))}</p>`).join('')}</section>`).join('');
+  const ids = p.sections.map((s) => s.id);
+  const toc = p.sections.map((s, i) => `<a href="#${s.id}" style="animation-timeline:--sec-${s.id}">${i + 1}. ${esc(s.h)}</a>`).join('');
+  // Each section publishes a view timeline; its contents link animates on it
+  // (site.css → .toc). Browsers without scroll-driven animations fall back to
+  // :target, so the link you clicked is the one marked.
+  const sections = p.sections.map((s, i) => `<section class="legal-sec" id="${s.id}" style="view-timeline-name:--sec-${s.id}">${eyebrow(t(p.sectionWord, { n: i + 1 }))}<h2>${esc(s.h)}</h2>${s.paras.map((x) => `<p>${esc(t(x))}</p>`).join('')}</section>`).join('');
+  const fallback = `<style>@supports not (timeline-scope: --a){${ids.map((id) => `.legal-grid:has(#${id}:target) .toc a[href="#${id}"]{color:var(--ink);border-left-color:var(--teal);font-weight:600}`).join('')}.legal-grid:has(:target) .toc a:first-of-type:not(:hover){color:var(--muted);border-left-color:var(--line-soft);font-weight:400}}</style>`;
 
   const hero = `<section class="section--warm" style="padding:clamp(3rem,2rem + 4vw,6rem) 0 clamp(2.5rem,2rem + 2vw,4rem)">${wrap(`<div class="stack">${eyebrow(p.eyebrow)}<h1 class="h1 h1--s">${esc(p.h1)}</h1><p class="body">${esc(t(p.updated))}</p></div>`)}</section>`;
 
-  const body = `<section class="section" style="padding-top:clamp(2.5rem,2rem + 2vw,4rem)">${wrap(`
-<div class="grid grid--12 start" style="row-gap:2.5rem">
+  const body = `<section class="section" style="padding-top:clamp(2.5rem,2rem + 2vw,4rem)">${fallback}${wrap(`
+<div class="grid grid--12 start legal-grid" style="row-gap:2.5rem;timeline-scope:${ids.map((id) => '--sec-' + id).join(',')}">
   <nav class="c1-4 toc" aria-label="${esc(p.contents)}"><span class="eyebrow" style="margin-bottom:1rem">${esc(p.contents)}</span>${toc}</nav>
   <div class="c5-12">${sections}</div>
 </div>`)}</section>`;

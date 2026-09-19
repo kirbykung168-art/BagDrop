@@ -30,8 +30,15 @@ const walk = async (d) => {
   }
 };
 await walk(DIST);
-const docs = new Map();
-for (const f of htmlFiles) docs.set('/' + relative(DIST, f).replace(/\\/g, '/'), await readFile(f, 'utf8'));
+const docs = new Map(), rawBytes = new Map();
+for (const f of htmlFiles) {
+  const raw = await readFile(f, 'utf8');
+  const key = '/' + relative(DIST, f).replace(/\\/g, '/');
+  rawBytes.set(key, Buffer.byteLength(raw));
+  // Thai pages wrap compounds in nowrap spans (build.mjs → bindThai);
+  // unwrap them so facts compare character for character with facts.mjs.
+  docs.set(key, raw.replace(/<span class="nb">([^<]*)<\/span>/g, '$1').replace(/\u00A0/g, ' '));
+}
 const pages = [...docs].filter(([p]) => !p.endsWith('404.html') && p !== '/index.html');
 const css = await readFile(join(ROOT, 'src/styles/site.css'), 'utf8');
 
@@ -180,7 +187,7 @@ print(json.dumps(out))
       const text = html.replace(/<style[\s\S]*?<\/style>/g, ' ').replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<[^>]+>/g, ' ');
       for (const ch of text) {
         const cp = ch.codePointAt(0);
-        if (cp < 32) continue;
+        if (cp < 32 || cp === 0x2060 || cp === 0x200b) continue; // default-ignorable, never rendered
         const bucket = (cp >= 0x0e00 && cp <= 0x0e7f && cp !== 0x0e3f) ? 'thai'
           : ((cp >= 0x2e80 && cp <= 0x303f) || (cp >= 0x3400 && cp <= 0x4dbf) || (cp >= 0x4e00 && cp <= 0x9fff) || (cp >= 0xff00 && cp <= 0xffef)) ? 'cjk'
           : 'latin';
@@ -290,7 +297,7 @@ head('§8  Page weight (Home under ~700 KB incl. SVGs and fonts; diagrams under 
   let worst = 0, worstName = '';
   for (const [p, html] of pages) {
     const lang = p.split('/')[1];
-    const total = Buffer.byteLength(html) + (fontBytes[lang] || fontBytes.en) + (await fsize('sc-sample-500.woff2'));
+    const total = rawBytes.get(p) + (fontBytes[lang] || fontBytes.en) + (await fsize('sc-sample-500.woff2'));
     if (total > worst) { worst = total; worstName = p; }
   }
   worst <= 700 * 1024 ? ok(`heaviest page ${worstName} = ${(worst / 1024).toFixed(1)} KB incl. fonts (budget 700 KB)`) : bad(`${worstName} = ${(worst / 1024).toFixed(1)} KB exceeds 700 KB`);

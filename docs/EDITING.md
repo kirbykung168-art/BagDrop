@@ -40,6 +40,11 @@ an SVG.
 
 After editing Thai, regenerate the review sheet: `node tools/copy-sheet.mjs`.
 
+If a Thai heading breaks in the middle of a word (the browser's dictionary
+splits compounds such as ต่อ|รอง), add the word to
+`src/content/thai-nobreak.mjs`. The build wraps it so it cannot break; the copy
+itself is never changed.
+
 ## 2. Changing a company or product fact
 
 **Never type a company fact into a page or a copy string.** Every one lives in

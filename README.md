@@ -47,6 +47,7 @@ There is **no CMS, no framework and no client-side JavaScript**. `build.mjs` is 
 src/content/facts.mjs           ← SINGLE SOURCE OF TRUTH for every company/product fact
 src/content/placeholders.mjs    ← every unconfirmed value, marked PLACEHOLDER (see CONTENT_TODO.md)
 src/content/copy/{en,th}.mjs    ← all prose, one module per language (zh.mjs kept for later)
+src/content/thai-nobreak.mjs    ← Thai compounds the browser must not split across lines
 src/lib/render.mjs              ← <head>, header, footer, sticky bar, JSON-LD, {token} filling
 src/lib/components.mjs          ← buttons, icons, phone mockups and every SVG illustration
 src/lib/pages.mjs               ← one function per page
@@ -105,9 +106,16 @@ headings are tracked to −0.045em; Thai is never tightened and Thai body sits a
 1.7 line-height. All self-hosted and subset — seven faces total **84 KB**.
 
 Interactive pieces are native: the accordion and the mobile menu are
-`<details>`, so they work by keyboard with no script. The condensing header and
-the diagram draw-in are CSS scroll-driven animations; the hero door loop is a
-CSS keyframe. Everything is disabled under `prefers-reduced-motion`.
+`<details>`, so they work by keyboard with no script. The condensing header,
+the diagram draw-in and the Legal contents list that follows the section in
+view are CSS scroll-driven animations (with a `:target` fallback for the list);
+the hero door loop is a CSS keyframe. Everything is disabled under
+`prefers-reduced-motion`.
+
+Thai line-breaking: browsers break Thai with a dictionary that happily splits
+compounds (ต่อ|รอง). `src/content/thai-nobreak.mjs` lists words that must stay
+whole; the build wraps them in a nowrap span in text nodes only, so facts and
+the copy sheet are untouched.
 
 ## Performance
 
@@ -115,13 +123,13 @@ Lighthouse **mobile** against `npm run serve` (which gzips, as a real host does)
 
 | Page | Perf | A11y | Best practices | SEO | CLS |
 |---|---|---|---|---|---|
-| `/en/` | 98 | 96 | 100 | 100 | 0 |
-| `/th/` | 100 | 96 | 100 | 100 | 0 |
-| `/en/how-it-works/` | 100 | 96 | 100 | 100 | 0 |
-| `/en/pricing/` | 100 | 96 | 100 | 100 | 0 |
-| `/en/venue-partners/` | 100 | 96 | 100 | 100 | 0 |
-| `/en/company/` | 100 | 95 | 100 | 100 | 0 |
-| `/en/legal/` | 100 | 95 | 100 | 100 | 0 |
+| `/en/` | 100 | 100 | 100 | 100 | 0 |
+| `/th/` | 100 | 100 | 100 | 100 | 0 |
+| `/en/how-it-works/` | 100 | 100 | 100 | 100 | 0 |
+| `/en/pricing/` | 100 | 100 | 100 | 100 | 0 |
+| `/en/venue-partners/` | 100 | 100 | 100 | 100 | 0 |
+| `/en/company/` | 100 | 100 | 100 | 100 | 0 |
+| `/en/legal/` | 100 | 100 | 100 | 100 | 0 |
 
 Heaviest page including fonts: **183 KB** (Thai Home) against a 700 KB budget;
 heaviest HTML gzipped **21 KB**; every diagram SVG under 40 KB.
