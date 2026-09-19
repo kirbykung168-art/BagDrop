@@ -1,211 +1,165 @@
 # BagDrop website
 
-Static, trilingual website for **BagDrop**, the trading name of
+Static, bilingual (English / Thai) website for **BagDrop**, the trading name of
 **8Venture Co., Ltd.** (บริษัท 8เวนเจอร์ จำกัด), juristic person registration
 number **0105569178707**.
 
-The site is a **credibility instrument**, not a marketing site. Its job is that a
-commercial property professional looking up "BagDrop" the night before a meeting
-can establish, within sixty seconds on a phone: what the product physically is,
-what it costs, that a registered Thai company stands behind it and how to check
-that, who to call, and that someone competent built it.
+The site does two jobs: it tells a traveller what BagDrop is and what it costs
+inside ninety seconds, and it lets a commercial property professional establish,
+on a phone the night before a meeting, that a registered Thai company stands
+behind it and who to call.
 
-**No locker is in service yet.** The site states this plainly on the Home and
-Venue Partners pages rather than implying an operating network.
+**No locker is in service yet.** Every page says so plainly.
 
 ---
 
 ## Quick start
 
 ```bash
-npm install          # only puppeteer-core, for screenshots and OG images
+npm install          # only puppeteer-core, for screenshots, OG cards and audits
 npm run build        # → public/
 npm run serve        # → http://localhost:3000
-npm run check        # 32 correctness/accessibility assertions
+npm run check        # 44 correctness, fact, contrast and accessibility assertions
 ```
 
 There is **no CMS, no framework and no client-side JavaScript**. `build.mjs` is a
-~150-line generator with zero runtime dependencies.
+~150-line generator with zero runtime dependencies; the production CSP has no
+`script-src` at all.
 
 ## Commands
 
 | Command | Does |
 |---|---|
-| `npm run build` | Renders `public/` — 20 HTML pages, sitemap, robots, redirects |
-| `npm run serve` | Serves `public/` on :3000, with gzip and real 404 status codes |
-| `npm run check` | Fact, hreflang, contrast, link, font-coverage and weight assertions |
-| `npm run fonts` | Re-subsets the webfonts. **Required after any Chinese copy change** |
+| `npm run build` | Renders `public/` — 14 HTML pages, sitemap, robots, redirects |
+| `npm run serve` | Serves `public/` on :3000 with gzip, production headers and real 404s |
+| `npm run check` | Facts, hreflang, links, font coverage, contrast, a11y scaffolding, weight, placeholders |
+| `npm run lighthouse` | Lighthouse mobile on every page; fails below 95 in any category |
+| `npm run fonts` | Re-subsets the webfonts (needs Python + network once) |
 | `npm run shot -- <url> [label] [mobile\|desktop]` | Screenshot to `temporary screenshots/` |
-| `node tools/audit.mjs` | In-browser check at 320px and 390px: overflow, tap targets, clipped tables |
-| `node tools/copy-sheet.mjs` | Regenerates the Thai and Chinese review sheets |
-| `node tools/verify-headers.mjs` | Loads every page under the production CSP and fails on violations |
+| `node tools/audit.mjs` | In-browser check at 320px and 390px: overflow, 44px targets |
+| `node tools/verify-headers.mjs` | Loads pages under the production CSP and fails on violations |
 | `node tools/make-assets.mjs` | Regenerates OG cards and PNG icons |
+| `node tools/copy-sheet.mjs` | Regenerates the Thai review sheet |
 
 ## Structure
 
 ```
-src/content/facts.mjs        ← SINGLE SOURCE OF TRUTH for every company/product fact
-src/content/copy/{en,th,zh}.mjs   ← all prose, one module per language
-src/lib/render.mjs           ← layout, <head>, masthead, footer, JSON-LD
-src/lib/pages.mjs            ← one function per page
-src/styles/site.css          ← the whole design system (inlined into each page)
-build.mjs                    ← the generator
-tools/                       ← QA, audit, fonts, copy sheets, asset generation
-static/                      ← SOURCE assets: fonts, favicons, OG images, _headers
-public/                      ← BUILD OUTPUT (git-ignored). See "Deployment" for why
-docs/INPUTS-REQUIRED.md      ← what the client still owes, and what is a placeholder
-docs/EDITING.md              ← how to change copy, pricing, and add a location
-docs/{th,zh}-copy-sheet.md   ← every translated string beside its English source
+src/content/facts.mjs           ← SINGLE SOURCE OF TRUTH for every company/product fact
+src/content/placeholders.mjs    ← every unconfirmed value, marked PLACEHOLDER (see CONTENT_TODO.md)
+src/content/copy/{en,th}.mjs    ← all prose, one module per language (zh.mjs kept for later)
+src/lib/render.mjs              ← <head>, header, footer, sticky bar, JSON-LD, {token} filling
+src/lib/components.mjs          ← buttons, icons, phone mockups and every SVG illustration
+src/lib/pages.mjs               ← one function per page
+src/styles/site.css             ← the design system (inlined into each page)
+build.mjs                       ← the generator
+tools/                          ← QA, Lighthouse, audit, fonts, assets
+static/                         ← SOURCE assets: fonts, favicon, OG images, placeholder PDF
+public/                         ← BUILD OUTPUT (git-ignored)
+CONTENT_TODO.md                 ← what each placeholder is and what replaces it
+docs/                           ← editing guide, client inputs, Thai copy sheet
 ```
 
-**No page hardcodes a company or product fact.** Everything comes from
-`facts.mjs`, so the registration number cannot drift between pages or languages.
-`npm run check` asserts this on all 15 content pages.
+**No page hardcodes a fact.** Copy strings carry `{tokens}` (`{hour}`, `{cap}`,
+`{reg}`, `{liability}` …) that `render.mjs` fills from `facts.mjs` and
+`placeholders.mjs` at build time, so a number is typed once and the Thai
+reviewer still sees whole sentences.
 
 ## Pages
 
-| URL | EN | TH | ZH |
-|---|---|---|---|
-| `/` | redirects to `/en/` | | |
-| `…/` (Home) | ✅ | ✅ | ✅ |
-| `…/how-it-works/` | ✅ | ✅ | ✅ |
-| `…/pricing/` | ✅ | ✅ | ✅ |
-| `…/venue-partners/` | ✅ | ✅ | — |
-| `…/company/` | ✅ | ✅ | — |
-| `…/legal/` | ✅ | ✅ | — |
-| `…/404.html` | ✅ | ✅ | ✅ |
+| URL | EN | TH |
+|---|---|---|
+| `/` | redirects to `/en/` | |
+| `…/` Home | ✅ | ✅ |
+| `…/how-it-works/` | ✅ | ✅ |
+| `…/pricing/` | ✅ | ✅ |
+| `…/venue-partners/` | ✅ | ✅ |
+| `…/company/` | ✅ | ✅ |
+| `…/legal/` | ✅ | ✅ |
+| `…/404.html` | ✅ | ✅ |
 
-Simplified Chinese covers the **traveller-facing** pages only, per brief §6.
-Venue Partners is written for a property professional and Legal needs the
-company's Thai legal adviser, so the Chinese pages link through to English and
-label those links. `hreflang` only ever claims a language a page genuinely
-exists in; the language toggle still offers all three, falling back to that
-language's homepage.
+The language toggle keeps the reader on the equivalent page; every page carries
+reciprocal `hreflang` plus `x-default` (English). Chinese appears only as a
+language sample on How it works; `src/content/copy/zh.mjs` is kept for when
+those pages are completed.
 
 ## Design
 
-**"Registry Editorial."** The page reads as a filed document: hairline rules,
-label/value definition rows, tabular figures. No cards, no shadows, no rounded
-corners, no gradients, no animation, no imagery — per brief §7, which bans all of
-those. The single repeating motif is a short accent rule above a small-caps
-section label.
+Built from the approved mockups in the `bagdrop-handoff/design` package. The
+memorable element is the price set as typography — 112–160px Inter Tight
+numerals — with full-bleed teal and ink bands and stylised isometric line
+drawings instead of photography.
 
-| Token | Value | Notes |
+| Token | Value | Use |
 |---|---|---|
-| Ink | `#14282C` | Matches the supplied wordmark, which samples at `#14272B` |
-| Paper | `#FFFFFF` | |
-| Brand | `#00B2A9` | **2.64:1 on white — rules and borders only, never text.** `npm run check` enforces this |
-| Link | `#007A73` | Darkened brand tint, 5.21:1, passes AA |
-| Muted | `#5A6B6E` | 5.58:1, passes AA |
+| `--ink` | `#14282C` | Text, dark sections |
+| `--ink-deep` | `#0E1E21` | Footer, text on teal |
+| `--teal` | `#00B2A9` | Fills, primary buttons, large numerals on dark. **2.64:1 on white — never text on white**; `npm run check` enforces it |
+| `--teal-text` | `#007A74` | Links and eyebrows on light surfaces (5.2:1) |
+| `--muted` | `#4A5F62` | Secondary text on white (6.8:1) |
+| `--warm` / `--teal-pale` | `#F7F6F2` / `#E8F6F5` | Alternate section fills |
+| `--line-green` | `#06C755` | LINE buttons only, with `#0B2A14` text |
 
-Type: **Inter** (Latin) and **Noto Sans Thai** and **Noto Sans SC**, self-hosted
-and subset, two weights each. Latin headings are tracked to `-0.022em`; Thai and
-Chinese are never tightened, and Thai body line-height is 1.75 to clear tone
-marks. Thai is never justified.
+Type: **Inter Tight** (600/700) for headings, numerals and the wordmark;
+**Inter** (400/600) for body; **IBM Plex Sans Thai** (400/600) for Thai. Latin
+headings are tracked to −0.045em; Thai is never tightened and Thai body sits at
+1.7 line-height. All self-hosted and subset — seven faces total **84 KB**.
 
-The wordmark is the word "BagDrop" set in live Inter Bold text — no image, no
-icon, no logo mark, per §7.
+Interactive pieces are native: the accordion and the mobile menu are
+`<details>`, so they work by keyboard with no script. The condensing header and
+the diagram draw-in are CSS scroll-driven animations; the hero door loop is a
+CSS keyframe. Everything is disabled under `prefers-reduced-motion`.
 
 ## Performance
 
-Lighthouse **mobile**, measured locally against `npm run serve` (which gzips, as
-a real host does):
+Lighthouse **mobile** against `npm run serve` (which gzips, as a real host does):
 
 | Page | Perf | A11y | Best practices | SEO | CLS |
 |---|---|---|---|---|---|
-| `/en/` | 100 | 100 | 100 | 100 | 0 |
-| `/th/` | 100 | 100 | 100 | 100 | 0 |
-| `/zh/` | 100 | 100 | 100 | 100 | 0 |
-| `/th/legal/` | 100 | 100 | 100 | 100 | 0 |
-| `/en/venue-partners/` | 100 | 100 | 100 | 100 | 0 |
+| `/en/` | 98 | 96 | 100 | 100 | 0 |
+| `/th/` | 100 | 96 | 100 | 100 | 0 |
+| `/en/how-it-works/` | 100 | 96 | 100 | 100 | 0 |
+| `/en/pricing/` | 100 | 96 | 100 | 100 | 0 |
+| `/en/venue-partners/` | 100 | 96 | 100 | 100 | 0 |
+| `/en/company/` | 100 | 95 | 100 | 100 | 0 |
+| `/en/legal/` | 100 | 95 | 100 | 100 | 0 |
 
-Heaviest page including fonts: **~151 KB** against a 500 KB budget. Heaviest HTML
-gzipped: **8.4 KB**.
+Heaviest page including fonts: **183 KB** (Thai Home) against a 700 KB budget;
+heaviest HTML gzipped **21 KB**; every diagram SVG under 40 KB.
 
-How that is achieved:
-
-- **Zero JavaScript.** The navigation wraps instead of hiding behind a menu button.
-- **CSS inlined** into every page, so there is no render-blocking request at all.
-- **Fonts declared with `unicode-range`**, so an English page never fetches the
-  Thai or Chinese faces. Noto Sans SC is 17 MB at source and **50 KB** here,
-  subset to exactly the characters the site renders.
-- **A 0.9 KB micro-subset** serves the two characters "中文" in the language
-  switcher, so English and Thai pages don't drag in the full Chinese face for a
-  nav label.
-- **Both weights preloaded** for each page's primary script. The `<h1>` is the LCP
-  element; discovering its bold face late was what caused a 0.234 layout shift on
-  Thai pages before this was fixed.
+How: zero JavaScript; CSS inlined; fonts declared with `unicode-range` so an
+English page never fetches the Thai face; the `<h1>` face preloaded because it
+is the LCP element; inline SVG for every illustration.
 
 ## Deployment
 
-Pre-built static output. **`public/` is not committed** — the host must run the
-build. It needs only Node; no Python, no network and no browser are required, and
-the webfonts are committed under `public/fonts/`.
+Pre-built static output. **`public/` is not committed** — the host runs the
+build. It needs only Node.
 
-| Host | Config file | Build command | Output directory |
+| Host | Config | Build command | Output |
 |---|---|---|---|
 | **Vercel** | `vercel.json` | `node build.mjs` | `public` |
 | **Netlify** | `netlify.toml` | `npm run build` | `public` |
 
-### Why the build outputs to `public/`
+Source assets live in `static/` and the build writes to `public/`, which is the
+directory Vercel serves by default when no framework is detected — so the
+deployment is correct even if `vercel.json` is not applied. `/` 301s to `/en/`;
+trailing slashes are canonical; unmatched URLs return `public/404.html` with a
+real 404 status.
 
-Source assets live in **`static/`** and the build writes to **`public/`**, which
-is the reverse of the usual convention and is deliberate.
+Headers set HSTS, `X-Content-Type-Options`, `X-Frame-Options`,
+`Referrer-Policy`, `Permissions-Policy` and a CSP of `default-src 'none'`
+allowing only inline styles and same-origin fonts and images.
+`node serve.mjs` sends the identical set and `node tools/verify-headers.mjs`
+fails on any violation.
 
-`public/` is the directory Vercel serves by default for a project with no
-detected framework. Emitting the finished site there means the deployment is
-correct even when `vercel.json` is not applied — because a dashboard override
-was left set, or the project was created before the config existed. Naming the
-*source* folder `public/` is the trap this project originally fell into: Vercel
-served it, found fonts and icons but no `index.html`, and returned 404 for every
-page while the real site sat unbuilt in `dist/`.
-
-### Vercel
-
-`vercel.json` sets the build command, the output directory and the security
-headers — **Vercel ignores `static/_headers`, which is Netlify's format.** Import
-the repository and deploy; no dashboard configuration is required, and because
-the build writes to `public/`, the default output directory is already correct.
-
-If a deployment still 404s, check *Project → Settings → Build and Deployment*:
-a **Output Directory** override left set to something other than `public` will
-win over `vercel.json`. Either switch the override off or set it to `public`.
-Also confirm **Root Directory** is `./` and not `public`.
-
-### Both hosts
-
-- `/` is a **301** to `/en/` (x-default). `public/index.html` is a meta-refresh
-  fallback for hosts that cannot express a redirect.
-- Trailing slashes are canonical (`/en/pricing/`), matching the `<link rel=canonical>`
-  in every page.
-- Unmatched URLs return `public/404.html` with a real 404 status. It is the English
-  404 and carries the language switcher. Netlify additionally serves per-language
-  404s; Vercel would need a rewrite for that, which returns 200 and creates a soft
-  404, so it is deliberately not configured.
-- Headers set HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`,
-  `Permissions-Policy` and a CSP of `default-src 'none'` allowing only inline
-  styles and same-origin fonts and images — the site needs nothing else.
-  `node serve.mjs` sends the identical header set, and
-  `node tools/verify-headers.mjs` loads every page through it and fails on any CSP
-  violation, blocked font or failed request. Run it before changing the policy: a
-  CSP that breaks a page does so silently.
-
-No analytics is installed. If one is added it must be cookieless or gated behind
-consent, and `legal.sections[privacy]` must be updated **first** — the privacy
-notice currently states that the site sets no cookies and carries no third-party
-scripts, and `npm run check` asserts that this remains true.
+No analytics is installed. If one is added it must be cookieless or gated
+behind consent (PDPA), and the privacy section in `copy/*.mjs → legal` must be
+updated first.
 
 ## Before launch
 
-See **`docs/INPUTS-REQUIRED.md`**. In short, the site cannot go live until:
-a domain email and LINE OA ID replace their placeholders; the Thai and Chinese
-copy is reviewed by native speakers; and the legal terms, the per-item liability
-limit and the prohibited-items list are approved by the company's Thai legal
-adviser. The pricing rules in §4 of the brief must also be confirmed before the
-Pricing page ships.
-
-## Handover
-
-Per brief §12, the domain, hosting and repository must end up in the client's
-name. This repository was pushed to an existing GitHub account; transfer
-ownership (Settings → Danger Zone → Transfer) if that is not the client's own.
+See **`CONTENT_TODO.md`** for every placeholder and **`docs/INPUTS-REQUIRED.md`**
+for what the client still owes. In short: a domain email and LINE OA ID; native
+Thai review of `copy/th.mjs`; legal sign-off on the terms, liability limit,
+prohibited items and storage period; the real company-profile PDF; official
+payment-brand artwork; the founder's portrait.
