@@ -213,8 +213,12 @@ a:hover { text-decoration-thickness: 2px; }
 .langs { display: flex; align-items: center; font-size: var(--t-label); }
 /* §7: 48x48 minimum. These sit in the nav row rather than the top bar
    because three 48px targets will not fit beside the wordmark at 320px. */
-/* 'SC Nav' first so the switcher resolves 中文 against the micro subset. */
-.langs [lang="zh-Hans"] { font-family: 'SC Nav', 'Noto Sans SC', sans-serif; }
+/* The switcher resolves 中文 against the 2-glyph micro subset. 'Noto Sans SC'
+   is deliberately NOT in this chain: with font-display: optional the browser
+   falls through to the next family if the first has not arrived within the
+   block period, and that pulled the full 51KB Chinese face onto English pages.
+   The system fallback renders these two characters perfectly well. */
+.langs [lang="zh-Hans"] { font-family: 'SC Nav', sans-serif; }
 .langs a, .langs span {
   display: inline-flex; align-items: center; justify-content: center;
   min-height: 48px; min-width: 48px; padding-inline: var(--s-2); text-decoration: none;
