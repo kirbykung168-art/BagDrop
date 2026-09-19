@@ -12,7 +12,7 @@ import { existsSync } from 'node:fs';
 const CHROME = ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
   '/Applications/Chromium.app/Contents/MacOS/Chromium'].find((p) => existsSync(p));
 const BASE = process.env.BASE || 'http://localhost:3000';
-const PATHS = ['/en/', '/th/', '/zh/', '/en/venue-partners/', '/en/legal/', '/en/404.html'];
+const PATHS = ['/en/', '/th/', '/en/venue-partners/', '/en/pricing/', '/en/legal/', '/en/404.html'];
 
 let fail = 0;
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: 'new' });
