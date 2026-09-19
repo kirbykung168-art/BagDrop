@@ -7,7 +7,7 @@ Every change follows the same shape:
 
 ```bash
 # 1. edit a file under src/
-npm run build     # regenerate dist/
+npm run build     # regenerate public/
 npm run check     # 32 assertions — must say "0 failed"
 npm run serve     # look at http://localhost:3000
 ```
@@ -118,7 +118,7 @@ add a map.
 The site currently contains **no images at all**, by instruction. When real
 photographs of an installed unit exist:
 
-1. Put them in `public/photos/`, exported to **AVIF or WebP**.
+1. Put them in `static/photos/`, exported to **AVIF or WebP**.
 2. Add them with explicit dimensions and real alt text:
    ```html
    <img src="/photos/unit-front.avif" width="1200" height="900" loading="lazy"
@@ -133,7 +133,7 @@ Never use stock photography or AI-generated images.
 
 ## 6. The company profile PDF
 
-When supplied, put it in `public/` and replace the "available on request" mailto
+When supplied, put it in `static/` and replace the "available on request" mailto
 in `src/lib/pages.mjs` → `venues()` with a real link. The brief requires the
 **file size to be shown**:
 

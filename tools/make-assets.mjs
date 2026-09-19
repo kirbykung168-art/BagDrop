@@ -14,7 +14,7 @@ import { company, product } from '../src/content/facts.mjs';
 import { COPY, moneyText } from '../src/lib/render.mjs';
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
-const PUB = join(ROOT, 'public');
+const PUB = join(ROOT, 'static');
 
 const CHROME = [
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',

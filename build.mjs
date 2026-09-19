@@ -5,7 +5,7 @@
  * is 16 documents with no client JavaScript, so a build with no node_modules is
  * faster, has no supply chain, and stays readable for whoever edits it next.
  *
- *   node build.mjs          → writes ./dist
+ *   node build.mjs          → writes ./public
  */
 import { readFile, writeFile, mkdir, rm, cp, readdir, stat } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -17,7 +17,10 @@ import { layout, PAGES, COPY, site, urlFor } from './src/lib/render.mjs';
 import { RENDERERS } from './src/lib/pages.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
-const DIST = join(ROOT, 'dist');
+// Output to public/ deliberately: it is the directory Vercel serves by
+// default for a project with no detected framework, so the site deploys
+// correctly even if vercel.json is not applied. Source assets live in static/.
+const DIST = join(ROOT, 'public');
 
 const write = async (rel, contents) => {
   const out = join(DIST, rel);
@@ -124,7 +127,7 @@ ${alts}
   written.push(await write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${site.origin}/sitemap.xml\n`));
 
   // Static assets (fonts, favicons, og images).
-  const pub = join(ROOT, 'public');
+  const pub = join(ROOT, 'static');
   if (existsSync(pub)) await cp(pub, DIST, { recursive: true });
 
   // ---- Report ----------------------------------------------------------

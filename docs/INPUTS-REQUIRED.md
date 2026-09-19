@@ -44,7 +44,7 @@ Status: 🔴 blocks launch · 🟠 blocks a page · 🟢 supplied
 | 20 | **Default language / `x-default`** | English. `/` redirects to `/en/`. | 🟢 confirmed by client |
 | 21 | **Simplified Chinese** | In scope now, traveller-facing pages only (Home, How it works, Pricing, 404) per §6 scoping | 🟢 confirmed by client |
 | 22 | **Wordmark** | The word "BagDrop" as live text in Inter Bold. Matches the supplied `brand_assets/bagdrop logo.jpeg`, whose ink samples at `#14272B` ≈ the brief's `#14282C`. No icon or logo mark created. | 🟢 per §7 |
-| 23 | **Favicon** | Text-only "B", drawn from the real Inter Bold outline as an SVG path (`public/favicon.svg`). **Proposed for approval** — §7 warns it must not become a de facto logo mark. | 🟠 awaiting approval |
+| 23 | **Favicon** | Text-only "B", drawn from the real Inter Bold outline as an SVG path (`static/favicon.svg`). **Proposed for approval** — §7 warns it must not become a de facto logo mark. | 🟠 awaiting approval |
 
 ---
 

@@ -19,7 +19,7 @@ Venue Partners pages rather than implying an operating network.
 
 ```bash
 npm install          # only puppeteer-core, for screenshots and OG images
-npm run build        # → dist/
+npm run build        # → public/
 npm run serve        # → http://localhost:3000
 npm run check        # 32 correctness/accessibility assertions
 ```
@@ -31,8 +31,8 @@ There is **no CMS, no framework and no client-side JavaScript**. `build.mjs` is 
 
 | Command | Does |
 |---|---|
-| `npm run build` | Renders `dist/` — 20 HTML pages, sitemap, robots, redirects |
-| `npm run serve` | Static server on :3000, with gzip and real 404 status codes |
+| `npm run build` | Renders `public/` — 20 HTML pages, sitemap, robots, redirects |
+| `npm run serve` | Serves `public/` on :3000, with gzip and real 404 status codes |
 | `npm run check` | Fact, hreflang, contrast, link, font-coverage and weight assertions |
 | `npm run fonts` | Re-subsets the webfonts. **Required after any Chinese copy change** |
 | `npm run shot -- <url> [label] [mobile\|desktop]` | Screenshot to `temporary screenshots/` |
@@ -51,7 +51,8 @@ src/lib/pages.mjs            ← one function per page
 src/styles/site.css          ← the whole design system (inlined into each page)
 build.mjs                    ← the generator
 tools/                       ← QA, audit, fonts, copy sheets, asset generation
-public/                      ← fonts, favicons, OG images, _headers
+static/                      ← SOURCE assets: fonts, favicons, OG images, _headers
+public/                      ← BUILD OUTPUT (git-ignored). See "Deployment" for why
 docs/INPUTS-REQUIRED.md      ← what the client still owes, and what is a placeholder
 docs/EDITING.md              ← how to change copy, pricing, and add a location
 docs/{th,zh}-copy-sheet.md   ← every translated string beside its English source
@@ -137,36 +138,47 @@ How that is achieved:
 
 ## Deployment
 
-Pre-built static output. **`dist/` is not committed** — the host must run the
+Pre-built static output. **`public/` is not committed** — the host must run the
 build. It needs only Node; no Python, no network and no browser are required, and
 the webfonts are committed under `public/fonts/`.
 
 | Host | Config file | Build command | Output directory |
 |---|---|---|---|
-| **Vercel** | `vercel.json` | `node build.mjs` | `dist` |
-| **Netlify** | `netlify.toml` | `npm run build` | `dist` |
+| **Vercel** | `vercel.json` | `node build.mjs` | `public` |
+| **Netlify** | `netlify.toml` | `npm run build` | `public` |
+
+### Why the build outputs to `public/`
+
+Source assets live in **`static/`** and the build writes to **`public/`**, which
+is the reverse of the usual convention and is deliberate.
+
+`public/` is the directory Vercel serves by default for a project with no
+detected framework. Emitting the finished site there means the deployment is
+correct even when `vercel.json` is not applied — because a dashboard override
+was left set, or the project was created before the config existed. Naming the
+*source* folder `public/` is the trap this project originally fell into: Vercel
+served it, found fonts and icons but no `index.html`, and returned 404 for every
+page while the real site sat unbuilt in `dist/`.
 
 ### Vercel
 
-`vercel.json` sets everything, including the security headers — **Vercel ignores
-`public/_headers`, which is Netlify's format.** Import the repository and deploy;
-no dashboard configuration is needed.
+`vercel.json` sets the build command, the output directory and the security
+headers — **Vercel ignores `static/_headers`, which is Netlify's format.** Import
+the repository and deploy; no dashboard configuration is required, and because
+the build writes to `public/`, the default output directory is already correct.
 
-If the deployment returns 404 or a blank page, the cause is almost always the
-output directory. Vercel's default for a project with no detected framework is
-`public/`, which here holds only fonts and icons and has **no `index.html`**. In
-*Project → Settings → Build and Deployment*, make sure the **Build Command** and
-**Output Directory** overrides are switched **off** so `vercel.json` applies, or
-set them to `node build.mjs` and `dist`. Dashboard overrides win over
-`vercel.json`, so an old override left from a first attempt will keep breaking it.
+If a deployment still 404s, check *Project → Settings → Build and Deployment*:
+a **Output Directory** override left set to something other than `public` will
+win over `vercel.json`. Either switch the override off or set it to `public`.
+Also confirm **Root Directory** is `./` and not `public`.
 
 ### Both hosts
 
-- `/` is a **301** to `/en/` (x-default). `dist/index.html` is a meta-refresh
+- `/` is a **301** to `/en/` (x-default). `public/index.html` is a meta-refresh
   fallback for hosts that cannot express a redirect.
 - Trailing slashes are canonical (`/en/pricing/`), matching the `<link rel=canonical>`
   in every page.
-- Unmatched URLs return `dist/404.html` with a real 404 status. It is the English
+- Unmatched URLs return `public/404.html` with a real 404 status. It is the English
   404 and carries the language switcher. Netlify additionally serves per-language
   404s; Vercel would need a rewrite for that, which returns 200 and creates a soft
   404, so it is deliberately not configured.

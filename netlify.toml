@@ -1,7 +1,7 @@
 # Netlify deployment. The site is pre-built static HTML; there is no runtime.
 [build]
   command = "npm run build"
-  publish = "dist"
+  publish = "public"
 
 # The bare domain resolves to the default language (x-default = English).
 [[redirects]]

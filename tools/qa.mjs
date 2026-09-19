@@ -14,7 +14,7 @@ import { company, product, site } from '../src/content/facts.mjs';
 import { COPY, PAGES, urlFor } from '../src/lib/render.mjs';
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
-const DIST = join(ROOT, 'dist');
+const DIST = join(ROOT, 'public');
 
 let pass = 0, fail = 0;
 const ok = (m) => { pass++; console.log(`  ✓ ${m}`); };
@@ -152,9 +152,9 @@ print(json.dumps(out))
 `;
   try {
     const map = {
-      latin: join(ROOT, 'public/fonts/inter-400.woff2'),
-      thai: join(ROOT, 'public/fonts/thai-400.woff2'),
-      cjk: join(ROOT, 'public/fonts/sc-400.woff2'),
+      latin: join(ROOT, 'static/fonts/inter-400.woff2'),
+      thai: join(ROOT, 'static/fonts/thai-400.woff2'),
+      cjk: join(ROOT, 'static/fonts/sc-400.woff2'),
     };
     const res = JSON.parse(execFileSync(py, ['-c', script, JSON.stringify(map)], { encoding: 'utf8' }));
     const sets = Object.fromEntries(Object.entries(res).map(([k, v]) => [k, new Set(v)]));
@@ -257,7 +257,7 @@ head('§9  No third-party scripts, no render-blocking resources');
 head('§9  Page weight budget (500 KB)');
 {
   const fontBytes = { en: 0, th: 0, zh: 0 };
-  const fsize = async (f) => (await readFile(join(ROOT, 'public/fonts', f))).length;
+  const fsize = async (f) => (await readFile(join(ROOT, 'static/fonts', f))).length;
   fontBytes.en = (await fsize('inter-400.woff2')) + (await fsize('inter-700.woff2'));
   fontBytes.th = fontBytes.en + (await fsize('thai-400.woff2')) + (await fsize('thai-700.woff2'));
   fontBytes.zh = fontBytes.en + (await fsize('sc-400.woff2')) + (await fsize('sc-700.woff2'));

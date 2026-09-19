@@ -12,7 +12,7 @@ cd "$(dirname "$0")/.."
 
 VENV=".fontenv"
 CACHE=".fontcache"
-OUT="public/fonts"
+OUT="static/fonts"
 mkdir -p "$CACHE" "$OUT"
 
 if [ ! -x "$VENV/bin/pyftsubset" ]; then

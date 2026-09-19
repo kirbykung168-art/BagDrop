@@ -8,7 +8,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
-const DIST = join(ROOT, 'dist');
+const DIST = join(ROOT, 'public');
 const OUT = join(ROOT, 'tools', 'charsets');
 
 const files = [];

@@ -1,6 +1,6 @@
 /**
- * serve.mjs — static server for ./dist on http://localhost:3000
- * Zero dependencies. Serves pretty URLs (/en/pricing/ → dist/en/pricing/index.html)
+ * serve.mjs — static server for ./public on http://localhost:3000
+ * Zero dependencies. Serves pretty URLs (/en/pricing/ → public/en/pricing/index.html)
  * and returns the real 404 page with a 404 status, so it can be checked too.
  */
 import { createServer } from 'node:http';
@@ -9,7 +9,7 @@ import { readFile, stat } from 'node:fs/promises';
 import { join, extname, dirname, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), 'dist');
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), 'public');
 const PORT = Number(process.env.PORT || 3000);
 
 const TYPES = {
