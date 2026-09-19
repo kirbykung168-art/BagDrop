@@ -5,7 +5,7 @@
 import { COPY, company, product, placeholders, esc, money, tFor, hrefFor, thb } from './render.mjs';
 import {
   icon, eyebrow, btn, link, statusLine, row, paymentMarks, accordion,
-  illustration, lockerIllustration, floorPlan, whatFits, priceCapChart, emptyLocker, phone, profileDoc, monogram,
+  illustration, lockerIllustration, floorPlan, whatFits, priceCapChart, emptyLocker, kiosk, profileDoc, monogram,
 } from './components.mjs';
 
 const ph = placeholders;
@@ -66,13 +66,13 @@ ${head({ eyebrow: pr.eyebrow, h2: pr.h2, link: link(c.ui.fullPricing, hrefFor(la
   /* 4 — How it works */
   const hw = p.how;
   const steps = hw.steps.map((s) => `<div class="journey__step"><span class="journey__ico${s.on ? ' journey__ico--on' : ''}">${icon(s.icon, { stroke: 1.5 })}</span><div class="journey__body"><span class="journey__n num">${esc(s.n)}</span><h3 class="h3">${esc(s.h)}</h3><p class="body journey__p-l">${esc(s.p)}</p><p class="body journey__p-s" style="font-size:.9375rem">${esc(s.short)}</p></div></div>`).join('');
-  const phoneArgs = { s: c.diagrams.app, app: ph.app, money: m, lang, t };
-  const phones = ['store', 'pay', 'open'].map((k, i) => `<div class="phone-wrap${i < 2 ? ' hide-m' : ''}">${phone(k, phoneArgs)}<p class="phone-cap"><strong>${esc(hw.phones[i].n)}</strong> ${esc(hw.phones[i].p)}</p></div>`).join('');
+  const kioskArgs = { s: c.diagrams.app, app: ph.app, money: m, lang, t };
+  const kiosks = ['store', 'pay', 'open'].map((k, i) => `<div class="kiosk-wrap${i < 2 ? ' hide-m' : ''}">${kiosk(k, kioskArgs)}<p class="kiosk-cap"><strong>${esc(hw.screens[i].n)}</strong> ${esc(hw.screens[i].p)}</p></div>`).join('');
   const how = section('section--warm', `
 <div class="stack stack--xl">
 ${head({ eyebrow: hw.eyebrow, h2: hw.h2, lead: hw.lead, link: link(c.ui.walkthrough, hrefFor(lang, 'how')) })}
 <div class="journey">${steps}</div>
-<div class="phones">${phones}</div>
+<div class="kiosks">${kiosks}</div>
 </div>`);
 
   /* 5 — Who it's for */
@@ -171,7 +171,7 @@ ${head({ eyebrow: op.eyebrow, h2: op.h2, lead: op.lead, mod: 'light' })}
 /* ----------------------------------------------------------- HOW IT WORKS */
 export function how(lang) {
   const c = COPY[lang], p = c.how, t = tFor(lang), m = (n) => money(lang, n);
-  const phoneArgs = { s: c.diagrams.app, app: ph.app, money: m, lang, t };
+  const kioskArgs = { s: c.diagrams.app, app: ph.app, money: m, lang, t };
 
   const hero = section('section--warm section--s', `
 <div class="grid grid--12 center" style="row-gap:2rem">
@@ -180,11 +180,11 @@ export function how(lang) {
 </div>`);
 
   const im = c.diagrams.images;
-  const scenes = ['stepScan', 'stepPay', 'stepStore', 'stepCollect'];
+  const scenes = ['stepStart', 'stepPay', 'stepStore', 'stepCollect'];
   const steps = section('', `
 <div class="stack stack--xl">
 ${head({ eyebrow: p.stepsEyebrow, h2: p.stepsH2 })}
-<div class="phones phones--4">${p.steps.map((s, i) => `<div class="phone-wrap">${illustration(scenes[i], { alt: im[scenes[i]], tag: im.tag, cls: 'ill--scene', sizes: '(min-width: 64rem) 20rem, (min-width: 48rem) 46vw, 100vw' })}${phone(s.screen, phoneArgs)}<div class="stack stack--s"><span class="journey__n num" style="font-size:.9375rem">${esc(s.n)}</span><h3 class="h3">${esc(s.h)}</h3><p class="body">${esc(t(s.p))}</p></div></div>`).join('')}</div>
+<div class="kiosks kiosks--4">${p.steps.map((s, i) => `<div class="kiosk-wrap">${illustration(scenes[i], { alt: im[scenes[i]], tag: im.tag, cls: 'ill--scene', sizes: '(min-width: 64rem) 20rem, (min-width: 48rem) 46vw, 100vw' })}${kiosk(s.screen, kioskArgs)}<div class="stack stack--s"><span class="journey__n num" style="font-size:.9375rem">${esc(s.n)}</span><h3 class="h3">${esc(s.h)}</h3><p class="body">${esc(t(s.p))}</p></div></div>`).join('')}</div>
 </div>`);
 
   const wrong = section('section--pale', `
@@ -266,7 +266,7 @@ export function venues(lang) {
 
   const hero = section('section--ink section--s', `
 <div class="grid grid--12 center" style="row-gap:2rem">
-  <div class="c1-6 stack stack--l">${eyebrow(p.eyebrow, 'light')}<h1 class="h1 h1--s">${esc(p.h1)}</h1><p class="lead measure-s">${esc(p.lead)}</p>
+  <div class="c1-6 stack stack--l">${eyebrow(p.eyebrow, 'light')}<h1 class="h1 h1--s">${esc(p.h1)}</h1><p class="punch">${esc(p.punch)}</p><p class="lead measure-s">${esc(p.lead)}</p>
     <div class="btn-row btn-row--stack">${btn(c.ui.callDirector, company.tel.href, 'primary')}${btn(t(c.ui.profilePdfSize), ph.profile.href, 'outline', { attrs: 'download' })}</div>
     ${statusLine(c.status)}</div>
   <div class="c7-12 fig fig--white fig--tall"><div class="hide-m fig__in">${lockerIllustration({ labels: c.diagrams.locker, callouts: true, id: 'venue', draw: true })}</div><div class="hide-d fig__in">${lockerIllustration({ labels: c.diagrams.locker, callouts: false, id: 'venue-m' })}</div></div>
@@ -284,7 +284,7 @@ ${illustration('venueFloor', { alt: c.diagrams.images.venueFloor, tag: c.diagram
   const install = section('section--warm', `
 <div class="grid grid--12 center" style="row-gap:2.5rem">
   <div class="c1-6 fig fig--white fig--tall">${floorPlan({ labels: planLabels, id: 'venue' })}</div>
-  <div class="c8-12 stack stack--xl">${head({ eyebrow: p.install.eyebrow, h2: p.install.h2, cls: 'h2 h2--s' })}
+  <div class="c8-12 stack stack--xl">${head({ eyebrow: p.install.eyebrow, h2: p.install.h2, lead: p.install.lead, cls: 'h2 h2--s' })}
     <div class="timeline">${p.install.steps.map((s, i) => `<div class="timeline__step"><span class="timeline__n num${s.on ? ' timeline__n--on' : ''}">0${i + 1}</span><div class="stack stack--s" style="--stack-gap:.25rem"><div class="timeline__h">${esc(s.h)}</div><p class="body">${esc(s.p)}</p></div></div>`).join('')}</div></div>
 </div>`);
 

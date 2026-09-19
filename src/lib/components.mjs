@@ -37,6 +37,8 @@ const ICON = {
   unstaffed: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M3 3l18 18"/>',
   shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
   bag: '<path d="M5 8h14l-1 12H6z"/><path d="M9 8a3 3 0 0 1 6 0"/>',
+  erase: '<path d="M21 5H9l-6 7 6 7h12z"/><path d="M12 9.5l5 5 M17 9.5l-5 5"/>',
+  touch: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 6h6"/><circle cx="12" cy="13" r="2.5" stroke="#00B2A9"/><path d="M12 18v.01" stroke="#00B2A9"/>',
   ticket: '<path d="M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4z"/><path d="M15 7v10" stroke-dasharray="2 2"/>',
 };
 
@@ -302,45 +304,52 @@ export const spot = {
   evening: `<svg viewBox="0 0 160 120" width="160" height="120" fill="none" stroke="#14282C" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><g transform="rotate(-10 80 60)"><path d="M30 40h100v12a8 8 0 0 0 0 16v12H30V68a8 8 0 0 0 0-16z" fill="#FFFFFF"/><path d="M104 40v40" stroke-dasharray="3 4"/><path d="M44 54h40 M44 64h28"/><circle cx="117" cy="60" r="6" fill="#00B2A9"/></g></svg>`,
 };
 
-/* ----------------------------------------------------- Phone mockups */
+/* -------------------------------------------------- Terminal screens */
 /**
- * Four app screens. `s` is the screen copy object from the copy module;
- * `app` is placeholders.app; `money` formats an amount for the language.
+ * The four screens of the locker's own touchscreen. There is no phone app:
+ * everything happens on the machine, so these are drawn as a kiosk — a portrait
+ * screen in a rigid bezel with the card reader below it — with large targets
+ * and a full keypad. `s` is the screen copy; `app` is placeholders.app; `money`
+ * formats an amount for the language.
  */
-export function phone(kind, { s, app, money, lang, t = (x, v = {}) => fill(x, v) }) {
+export function kiosk(kind, { s, app, money, lang, t = (x, v = {}) => fill(x, v) }) {
   const dark = kind === 'open';
   let inner = '';
   if (kind === 'store') {
-    inner = `<div class="screen__top"><span class="screen__mark">BagDrop</span><span class="screen__langs">EN · <span lang="th">ไทย</span> · <span lang="zh-Hans">中文</span></span></div>
+    inner = `<div class="screen__top"><span class="screen__mark">BagDrop</span><span class="screen__langs"><b>EN</b><span lang="th">ไทย</span><span lang="zh-Hans">中文</span></span></div>
 <span class="screen__label">${esc(s.bank)} ${esc(app.bankId)}</span>
 <span class="screen__title">${esc(s.storeTitle)}</span>
 <div class="screen__opt screen__opt--on"><strong>${esc(s.largeLocker)}</strong><span class="small">${esc(s.fitsSuitcase)}</span><span class="teal">${esc(t(s.available, { n: app.available }))}</span></div>
-<div class="screen__kv screen__kv--b"><span>${esc(s.rate)}</span><span>${esc(t(s.rateValue))}</span></div>
-<div class="screen__kv" style="border-top:0"><span>${esc(s.dailyMax)}</span><span>${esc(money(300))}</span></div>
+<div class="screen__kv"><span>${esc(s.rate)}</span><span>${esc(t(s.rateValue))}</span></div>
+<div class="screen__kv screen__kv--b"><span>${esc(s.dailyMax)}</span><span>${esc(money(300))}</span></div>
 <div class="screen__cta screen__cta--teal">${esc(s.continue)}</div>`;
   } else if (kind === 'pay') {
     inner = `<span class="screen__back">← ${esc(s.back)}</span>
 <span class="screen__title">${esc(s.payTitle)}</span>
-<div class="screen__opt screen__opt--on screen__opt--row"><span class="radio radio--on" aria-hidden="true"></span><strong>${esc(s.card)}</strong><span class="mark mark--visa" style="margin-left:auto;height:auto;border:0;padding:0;font-size:.6875rem">VISA</span></div>
-<div class="screen__opt screen__opt--row"><span class="radio" aria-hidden="true"></span><strong>PromptPay</strong><span class="mark mark--pp" style="margin-left:auto;height:auto;border:0;padding:0;font-size:.6875rem">QR</span></div>
+<div class="screen__field"><span class="screen__label">${esc(s.mobileLabel)}</span><span class="num">${esc(app.maskedPhone)}</span></div>
+<div class="screen__pair"><div class="screen__opt screen__opt--on"><span class="radio radio--on" aria-hidden="true"></span><strong>${esc(s.card)}</strong><span class="mark mark--visa screen__mark-s">VISA</span></div>
+<div class="screen__opt"><span class="radio" aria-hidden="true"></span><strong>PromptPay</strong><span class="mark mark--pp screen__mark-s">QR</span></div></div>
 <div class="screen__box"><div><span>${esc(s.firstHour)}</span><span>${esc(money(50))}</span></div><div><span>${esc(s.extraTime)}</span><span>${esc(s.onCollection)}</span></div></div>
 <div class="screen__cta screen__cta--ink">${esc(t(s.pay, { amount: money(50) }))}</div>`;
   } else if (kind === 'open') {
-    inner = `<div class="screen__tick">${icon('check', { stroke: 2.2 })}</div>
-<span class="screen__title">${esc(t(s.openTitle, { n: app.lockerNo }))}</span>
+    inner = `<div class="screen__done"><div class="screen__tick">${icon('check', { stroke: 2.2 })}</div><span class="screen__title">${esc(t(s.openTitle, { n: app.lockerNo }))}</span></div>
 <span class="screen__hint">${esc(s.openHint)}</span>
 <div class="screen__pin"><span class="screen__label">${esc(s.yourPin)}</span><span class="num">${esc(app.pin)}</span></div>
 <span class="screen__hint screen__hint--s">${esc(s.smsTo)} ${esc(app.maskedPhone)}</span>
 <div class="screen__cta screen__cta--outline">${esc(s.reopen)}</div>`;
   } else if (kind === 'welcome') {
-    const keys = app.pin.split('');
+    // Three of four digits entered: the keypad is the whole screen, as on a cash machine.
+    const typed = app.pin.slice(0, 3).split('');
+    const dots = [0, 1, 2, 3].map((i) => `<span${typed[i] ? ' class="dot--in"' : ''}>${typed[i] ? '•' : ''}</span>`).join('');
+    const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'erase', '0', 'check'].map((k) =>
+      k.length > 1 ? `<span class="key--fn">${icon(k, { size: 20, stroke: 2 })}</span>` : `<span${k === app.pin[3] ? ' class="key--on"' : ''}>${k}</span>`).join('');
     inner = `<span class="screen__label">${esc(t(s.inUse, { n: app.lockerNo }))}</span>
 <span class="screen__title">${esc(s.welcome)}</span>
-<div class="screen__keys" aria-hidden="true"><span>${keys[0]}</span><span>${keys[1]}</span><span>${keys[2]}</span><span class="key--on">${keys[3]}</span><span class="key--off"></span><span class="key--off"></span></div>
-<div class="screen__box screen__box--row"><span>${esc(t(s.stored, { t: app.storedFor[lang] || app.storedFor.en }))}</span><span>${esc(money(app.storedTotal))}</span></div>
-<div class="screen__cta screen__cta--teal">${esc(s.openLocker)}</div>`;
+<div class="screen__dots" aria-hidden="true">${dots}</div>
+<div class="screen__keys" aria-hidden="true">${keys}</div>
+<div class="screen__box screen__box--row"><span>${esc(t(s.stored, { t: app.storedFor[lang] || app.storedFor.en }))}</span><span>${esc(money(app.storedTotal))}</span></div>`;
   }
-  return `<div class="phone" aria-hidden="true"><div class="screen${dark ? ' screen--dark' : ''}">${inner}</div></div>`;
+  return `<div class="kiosk" aria-hidden="true"><div class="screen${dark ? ' screen--dark' : ''}">${inner}</div><div class="kiosk__chin"><span class="kiosk__reader"></span><span class="kiosk__led"></span></div></div>`;
 }
 
 /* ------------------------------------------------ Director monogram */

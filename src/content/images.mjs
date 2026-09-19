@@ -21,9 +21,11 @@ export const IMAGES = {
   whoShopping: { src: '17_requested_visual_6_shopping_hands_free.png',  crop: [0, 90, 1536, 768],  widths: [480, 960] },
   whoEvening:  { src: '12_open_locker_backpack_visual.png',             crop: [300, 170, 1040, 520], widths: [480, 960] },
 
-  /* How it works — one scene per step (4:3) */
-  stepScan:    { src: '07_sequence_visual_B.png',      crop: [0, 180, 1254, 940],   widths: [480, 960] },
-  stepPay:     { src: '08_sequence_visual_C.png',      crop: [150, 0, 1365, 1024],  widths: [480, 960] },
+  /* How it works — one scene per step (4:3). Everything happens at the machine:
+     she taps its screen to start; the phone in stepPay is her own banking app
+     paying the PromptPay QR the terminal shows. */
+  stepStart:   { src: '08_sequence_visual_C.png',      crop: [150, 0, 1365, 1024],  widths: [480, 960] },
+  stepPay:     { src: '07_sequence_visual_B.png',      crop: [0, 180, 1254, 940],   widths: [480, 960] },
   stepStore:   { src: '09_store_visual.png',           crop: [100, 0, 1365, 1024],  widths: [480, 960] },
   stepCollect: { src: '10_collect_visual_man.png',     crop: [120, 0, 1365, 1024],  widths: [480, 960] },
 

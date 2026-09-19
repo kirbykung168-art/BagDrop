@@ -77,8 +77,8 @@ export default {
     images: {
       tag: 'ILLUSTRATION',
       hero: 'Illustration: a traveller with a teal suitcase and her phone beside a BagDrop locker bank. One locker door is open.',
-      stepScan: 'Illustration: a traveller holds her phone up to the locker terminal to scan the QR code.',
-      stepPay: 'Illustration: she chooses a locker and pays on the terminal screen.',
+      stepStart: 'Illustration: a traveller taps the touchscreen on the locker terminal to choose a locker.',
+      stepPay: 'Illustration: she holds her phone to the terminal to pay by PromptPay from her banking app.',
       stepStore: 'Illustration: she slides her suitcase into the open locker.',
       stepCollect: 'Illustration: a traveller lifts his suitcase out of the locker he has reopened.',
       venueFloor: 'Illustration: a BagDrop locker bank on a shopping-centre floor, between planters and seating, as shoppers pass.',
@@ -89,7 +89,7 @@ export default {
       illustrative: 'ILLUSTRATIVE',
       callouts: [
         { t: '20 LARGE LOCKERS', s: 'Each fits a full-size suitcase' },
-        { t: 'TERMINAL', s: 'QR · card · PromptPay' },
+        { t: 'TERMINAL', s: 'Touchscreen · card · PromptPay' },
         { t: '4G · MONITORED 24 H', s: 'Every door, lock and terminal' },
         { t: '5–7 SQM FOOTPRINT', s: 'One 220V outlet · under 1 kW' },
       ],
@@ -130,6 +130,7 @@ export default {
       continue: 'Continue',
       back: 'Back',
       payTitle: 'Payment',
+      mobileLabel: 'Mobile number for your PIN',
       card: 'Card',
       firstHour: 'First hour',
       extraTime: 'Extra time',
@@ -141,7 +142,7 @@ export default {
       smsTo: 'Also sent by SMS to',
       reopen: 'Reopen locker',
       inUse: 'LOCKER {n} · IN USE',
-      welcome: 'Welcome back',
+      welcome: 'Enter your PIN',
       stored: 'Stored {t}',
       openLocker: 'Open locker',
     },
@@ -152,13 +153,13 @@ export default {
   home: {
     title: 'BagDrop — Luggage lockers for Bangkok shopping centres',
     description:
-      'Self-service luggage lockers for Bangkok shopping centres. Scan, pay by card or PromptPay, lock your bag behind a PIN. {hour} per hour, never more than {cap} a day. Operated by {company}, registration {reg}.',
+      'Self-service luggage lockers for Bangkok shopping centres. Pay by card or PromptPay on the locker touchscreen and lock your bag behind a PIN. {hour} per hour, never more than {cap} a day. Operated by {company}, registration {reg}.',
     eyebrow: 'Self-service luggage lockers · Bangkok',
     h1: "Luggage lockers for Bangkok's shopping centres.",
-    lead: 'Scan the QR code, pay by card or PromptPay, and lock your bag away behind a door only your PIN can open. From scan to locked in about ninety seconds.',
-    leadShort: 'Scan, pay by card or PromptPay, and lock your bag away with a PIN. About ninety seconds.',
+    lead: 'Choose a locker on the touchscreen, pay by card or PromptPay, and lock your bag away behind a door only your PIN can open. About ninety seconds from first tap to locked.',
+    leadShort: 'Tap the screen, pay by card or PromptPay, and lock your bag away with a PIN. About ninety seconds.',
     facts: [
-      { h: 'About 90 seconds', s: 'From scan to locked', icon: 'clock' },
+      { h: 'About 90 seconds', s: 'From first tap to locked', icon: 'clock' },
       { h: 'Card or PromptPay', s: 'Never cash', icon: 'card' },
       { h: 'PIN access', s: 'No key to lose', icon: 'lock' },
       { h: 'Monitored 24 hours', hShort: 'Monitored 24 h', s: 'Every door, every lock', icon: 'eye' },
@@ -179,22 +180,22 @@ export default {
         { k: '3 hours', hours: 3 },
         { k: '9 hours', hours: 9 },
       ],
-      bullets: ['No cash', 'No account', 'No download', 'Reopen as often as you like'],
-      bulletsShort: 'No cash · No account · No download',
+      bullets: ['No cash', 'No account', 'No app', 'Reopen as often as you like'],
+      bulletsShort: 'No cash · No account · No app',
     },
 
     how: {
       eyebrow: 'How it works',
       h2: 'Four steps. About ninety seconds.',
-      lead: 'No queue, no counter, no key to lose. Everything happens on your phone and the locker door.',
+      lead: "No queue, no counter, no key to lose. Everything happens on the locker's touchscreen.",
       steps: [
-        { n: '01', h: 'Scan', p: 'Scan the QR code on the locker, or open the web app. No download, no account.', short: 'QR code on the locker. No download, no account.', icon: 'qr' },
-        { n: '02', h: 'Pay', p: 'Pay by international card or PromptPay. The first hour is charged at drop-off.', short: 'Card or PromptPay. Never cash.', icon: 'pay' },
+        { n: '01', h: 'Start', p: 'Tap the touchscreen on the locker and choose your language. No app, no account.', short: 'Tap the screen on the locker. No app, no account.', icon: 'touch' },
+        { n: '02', h: 'Pay', p: 'Enter your mobile number, then pay by international card or PromptPay. The first hour is charged at drop-off.', short: 'Card or PromptPay. Never cash.', icon: 'pay' },
         { n: '03', h: 'Store', p: 'A large locker opens. Put your bag inside and close the door. It locks automatically.', short: 'Bag in, door closed. It locks itself.', icon: 'suitcase', on: true },
         { n: '04', h: 'Reopen with your PIN', p: 'Your PIN arrives by SMS and on screen. Enter it to reopen the door as often as you like.', short: 'By SMS and on screen. As often as you like.', icon: 'pin' },
       ],
-      phones: [
-        { n: '01 · Scan.', p: 'The locker bank opens in your browser.' },
+      screens: [
+        { n: '01 · Start.', p: 'Choose a locker on the screen.' },
         { n: '02 · Pay.', p: 'Card or PromptPay. Never cash.' },
         { n: '03 · Store.', p: 'Your PIN reopens the door any time.' },
       ],
@@ -257,9 +258,9 @@ export default {
 
     venues: {
       eyebrow: 'For venue partners',
-      h2: 'A service that costs the venue nothing but floor space.',
-      h2Short: 'Costs the venue nothing but floor space.',
-      checks: ['Zero capital cost', 'One standard outlet', '5–7 sqm, freestanding', 'Installed in a day', 'No staff time, ever', 'Longer dwell time'],
+      h2: 'Revenue from space that earns nothing.',
+      h2Short: 'Revenue from space that earns nothing.',
+      checks: ['New income', 'Zero capital cost', 'One standard outlet', '5–7 sqm, freestanding', 'No staff time, ever', 'Longer dwell time'],
     },
 
     rules: {
@@ -281,7 +282,7 @@ export default {
       h2: 'Good to know.',
       p: 'Anything else? Message us on LINE and a person replies.',
       items: [
-        { q: 'Do I need to download an app?', a: "No. Scan the QR code on the locker and everything happens in your phone's browser. No account either." },
+        { q: 'Do I need an app?', a: "No. There is no app and nothing to download. Everything happens on the locker's touchscreen. No account either." },
         { q: 'What if I lose my PIN?', a: 'It was sent to you by SMS at payment. If the message is gone, contact us on LINE with the locker number and the time; we verify you and reissue it.' },
         { q: 'Can I open my locker more than once?', a: 'Yes. The same PIN opens the same door as often as you like until you collect for the last time.' },
         { q: 'Is there a time limit?', a: 'You can store for up to {maxDays} days. Time is charged per started hour and never more than {cap} in a calendar day.' },
@@ -309,20 +310,20 @@ export default {
 
   /* ---------------------------------------------------------- HOW */
   how: {
-    title: 'How BagDrop works — scan, pay, store, reopen with your PIN',
+    title: 'How BagDrop works — tap, pay, store, reopen with your PIN',
     description:
-      'Scan the QR code, pay by card or PromptPay, store your bag and reopen the door with your PIN as often as you like. What to do if something goes wrong.',
+      'Choose a locker on the touchscreen, pay by card or PromptPay, store your bag and reopen the door with your PIN as often as you like. What to do if something goes wrong.',
     eyebrow: 'How it works',
-    h1: 'From scan to locked in about ninety seconds.',
-    lead: 'No queue, no counter, no key to lose. Everything happens on your phone and the locker door.',
-    pills: ['No download', 'No account', 'No cash'],
+    h1: 'From first tap to locked in about ninety seconds.',
+    lead: "No queue, no counter, no key to lose. Everything happens on the locker's touchscreen.",
+    pills: ['No app', 'No account', 'No cash'],
     stepsEyebrow: 'Step by step',
-    stepsH2: 'Four steps on your phone.',
+    stepsH2: "Four steps, all on the locker's screen.",
     steps: [
-      { n: '01', h: 'Scan the QR code', p: 'On the terminal, or open the web app. It opens in your browser in English, Thai or Chinese.', screen: 'store' },
-      { n: '02', h: 'Pay by card or PromptPay', p: 'The first hour is charged at drop-off. Any extra time is settled when you collect, never more than {cap} a day.', screen: 'pay' },
+      { n: '01', h: 'Tap the screen', p: 'Choose English, Thai or Chinese on the first screen, then pick a locker. No app, no account.', screen: 'store' },
+      { n: '02', h: 'Pay by card or PromptPay', p: 'Enter your mobile number so your PIN can be texted to you, then pay. The first hour is charged at drop-off. Any extra time is settled when you collect, never more than {cap} a day.', screen: 'pay' },
       { n: '03', h: 'Store your bag', p: 'A large locker opens. Put your bag inside and close the door: it locks automatically. Your PIN arrives by SMS and on screen.', screen: 'open' },
-      { n: '04', h: 'Reopen with your PIN', p: 'Enter your PIN on the terminal or your phone. Reopen as often as you like; collect when you are ready.', screen: 'welcome' },
+      { n: '04', h: 'Reopen with your PIN', p: 'Enter your PIN on the touchscreen. Reopen as often as you like; collect when you are ready.', screen: 'welcome' },
     ],
     wrongEyebrow: 'If something goes wrong',
     wrongH2: 'A person is one message away.',
@@ -373,12 +374,13 @@ export default {
 
   /* ------------------------------------------------------- VENUES */
   venues: {
-    title: 'BagDrop for venue partners — zero capital cost, 5–7 sqm, unstaffed',
+    title: 'BagDrop for venue partners — new income from unused floor space',
     description:
-      'A luggage service that costs the venue nothing but floor space. Freestanding, 5–7 sqm, one standard outlet, unstaffed and cashless, monitored 24 hours with a four-hour on-site fault response.',
+      'Revenue from space that earns nothing. One outlet, no capital, new income. Freestanding, 5–7 sqm, one standard outlet, unstaffed and cashless, monitored 24 hours with a four-hour on-site fault response.',
     eyebrow: 'Venue partners',
-    h1: 'A luggage service that costs the venue nothing but floor space.',
-    lead: 'BagDrop is a self-contained, unstaffed unit. It arrives complete, plugs into one standard outlet, and can move to another part of the centre without construction.',
+    h1: 'Revenue from space that earns nothing.',
+    punch: 'One outlet. No capital. New income.',
+    lead: 'BagDrop turns a quiet corner into a paying service. We fund, install and run the unit; the venue provides the floor and one standard outlet. Commercial terms are agreed directly with the director.',
     strip: [
       { n: '{zero}', s: 'Capital cost to the venue' },
       { n: '5–7 sqm', s: 'Footprint, freestanding' },
@@ -387,7 +389,7 @@ export default {
     ],
     offer: {
       eyebrow: 'The offer',
-      h2: 'What the venue provides, and what it does not.',
+      h2: 'We bring everything except the floor.',
       cards: [
         { h: 'Zero capital cost', p: 'BagDrop funds, installs, owns and maintains the unit. The venue contributes space.', icon: 'zero', on: true },
         { h: 'One standard outlet', p: 'Single-phase 220V drawing under 1 kW, less than a vending machine. Connectivity is over 4G, so no data cabling is required.', icon: 'plug' },
@@ -399,7 +401,8 @@ export default {
     },
     install: {
       eyebrow: 'Installation',
-      h2: 'Installed in a day. Removed in a day.',
+      h2: 'A tenant that fits in seven square metres.',
+      lead: 'Installed in a day. Removed in a day.',
       steps: [
         { h: 'Agree the position', p: 'A short walk-through with the centre to choose a spot near an outlet.' },
         { h: 'Deliver and place', p: 'The unit arrives complete, outside trading hours.' },
@@ -411,6 +414,7 @@ export default {
       eyebrow: 'Why it is worth the floor space',
       statement: 'A shopper carrying luggage leaves early. A shopper who has put it down stays, eats, and buys more.',
       points: [
+        { h: 'New income.', p: 'Floor that earns nothing today starts paying.' },
         { h: 'Longer dwell time.', p: 'Visitors stay for the next shop, the meal, the film.' },
         { h: 'Fewer bags at the desk.', p: 'Frees concierge and retail staff from minding luggage.' },
         { h: 'A visible amenity.', p: 'Designed to sit quietly in premium retail environments.' },
@@ -430,7 +434,7 @@ export default {
         { k: 'Monitoring', v: 'Every door, lock and terminal, 24 hours' },
         { k: 'Fault response', v: 'On site within 4 hours during trading hours' },
         { k: 'Payment', v: 'International card and PromptPay. No cash at any point.' },
-        { k: 'Customer interface', v: 'Browser-based. No download, no account. English, ไทย, 中文.' },
+        { k: 'Customer interface', v: 'Touchscreen on the unit. No app, no account. English, ไทย, 中文.' },
         { k: 'Access control', v: 'PIN shown on screen and sent by SMS. Reopens the door any time.' },
         { k: 'Tariff to the customer', v: '{hour} per hour, maximum {cap} per day' },
       ],

@@ -116,7 +116,6 @@
   --r-l: 24px;
   --r-xl: 28px;
   --r-xxl: 32px;
-  --r-phone: 46px;
 
   --ease: cubic-bezier(.2, .8, .2, 1);
   --fast: 150ms;
@@ -643,30 +642,35 @@ body:has(.stickybar) { padding-bottom: 5.5rem; }
 .timeline__n--on { background: var(--teal); }
 .timeline__h { font-weight: 600; font-size: 1.0625rem; }
 
-/* ---------- Phone mockups ------------------------------------------- */
-.phones { display: grid; gap: 1.5rem; justify-items: center; }
-@media (min-width: 48rem) { .phones { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; } }
-.phones--4 { align-items: start; }
-@media (min-width: 48rem) { .phones--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 64rem) { .phones--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; width: 100%; }
-.phones--4 .phone-wrap { align-items: flex-start; }
-.phones--4 .phone { align-self: center; }
-.phone {
-  width: 16.25rem; aspect-ratio: 280 / 572; padding: .6875rem; border-radius: 42px; background: var(--ink);
-  flex-shrink: 0;
+/* ---------- Terminal screens ---------------------------------------- */
+/* The locker's own touchscreen, drawn as a kiosk: there is no phone app. */
+.kiosks { display: grid; gap: 1.5rem; justify-items: center; }
+@media (min-width: 48rem) { .kiosks { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; } }
+.kiosks--4 { align-items: start; }
+@media (min-width: 48rem) { .kiosks--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 64rem) { .kiosks--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.kiosk-wrap { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; width: 100%; }
+.kiosks--4 .kiosk-wrap { align-items: flex-start; }
+.kiosk {
+  width: 100%; max-width: 20rem; align-self: center; flex-shrink: 0;
+  padding: .625rem .625rem 0; border-radius: 18px; background: var(--ink);
+  display: flex; flex-direction: column;
 }
-@media (min-width: 64rem) { .phone { width: 17.5rem; padding: .75rem; border-radius: var(--r-phone); } }
+/* Card reader and status light under the screen, as on the unit's terminal. */
+.kiosk__chin { height: 2.75rem; display: flex; align-items: center; justify-content: center; gap: .75rem; }
+.kiosk__reader { width: 4.5rem; height: .5rem; border-radius: 3px; background: var(--ink-deep); box-shadow: inset 0 0 0 1px var(--line-dark); }
+.kiosk__led { width: .5rem; height: .5rem; border-radius: 50%; background: var(--teal); }
 .screen {
-  width: 100%; height: 100%; border-radius: 32px; background: var(--paper); color: var(--ink);
-  padding: 2.5rem 1.125rem 1.375rem; display: flex; flex-direction: column; gap: .875rem;
-  font-family: var(--font-body); overflow: hidden;
+  width: 100%; height: 29rem; border-radius: 8px; background: var(--paper); color: var(--ink);
+  padding: 1.125rem 1rem 1rem; display: flex; flex-direction: column; gap: .75rem;
+  font-family: var(--font-body);
 }
-@media (min-width: 64rem) { .screen { border-radius: 36px; padding: 2.75rem 1.25rem 1.5rem; } }
-.screen--dark { background: var(--ink); color: var(--paper); }
+.screen--dark { background: var(--ink-2); color: var(--paper); }
 .screen__top { display: flex; justify-content: space-between; align-items: center; }
 .screen__mark { font-family: 'Inter Tight', 'Inter', sans-serif; font-weight: 700; font-size: 1.125rem; letter-spacing: -.03em; }
-.screen__langs { font-size: .6875rem; font-weight: 600; color: var(--muted); }
+.screen__langs { display: flex; gap: .25rem; font-size: .6875rem; font-weight: 600; color: var(--muted); }
+.screen__langs > * { padding: .25rem .5rem; border-radius: 6px; border: 1px solid var(--line); font-weight: 600; }
+.screen__langs b { background: var(--ink); border-color: var(--ink); color: var(--paper); }
 .screen__label { font-size: .6875rem; font-weight: 600; letter-spacing: .14em; color: var(--teal-text); text-transform: uppercase; }
 :lang(th) .screen__label { letter-spacing: .04em; text-transform: none; }
 .screen--dark .screen__label { color: var(--teal-soft); }
@@ -701,14 +705,25 @@ body:has(.stickybar) { padding-bottom: 5.5rem; }
 .screen__pin { padding: 1.25rem 1rem; border-radius: var(--r-m); background: var(--ink-3); display: flex; flex-direction: column; gap: .5rem; align-items: center; }
 .screen__pin .screen__label { color: var(--teal-soft); }
 .screen__pin .num { font-size: 3rem; font-weight: 600; letter-spacing: .12em; line-height: 1; }
-.screen__keys { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
-.screen__keys span { height: 3.25rem; border-radius: 12px; background: var(--teal-tint); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 600; }
+.screen__field { padding: .625rem .875rem; border-radius: 12px; border: 1.5px solid var(--ink); display: flex; flex-direction: column; gap: .25rem; }
+.screen__field .screen__label { font-size: .625rem; }
+.screen__field .num { font-size: 1.125rem; font-weight: 600; letter-spacing: .04em; }
+.screen__pair { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+.screen__pair .screen__opt { padding: .75rem; gap: .5rem; }
+.screen__pair .screen__opt strong { font-size: .875rem; }
+.screen__mark-s { height: auto; border: 0; padding: 0; font-size: .6875rem; align-self: flex-start; }
+.screen__done { display: flex; align-items: center; gap: .75rem; }
+.screen__done .screen__tick { flex-shrink: 0; }
+.screen__dots { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; }
+.screen__dots span { height: 2.5rem; border-radius: 10px; border: 1.5px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; line-height: 1; }
+.screen__dots .dot--in { border-color: var(--ink); }
+.screen__keys { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .375rem; flex: 1; }
+.screen__keys span { min-height: 2.75rem; border-radius: 10px; background: var(--teal-tint); display: flex; align-items: center; justify-content: center; font-size: 1.125rem; font-weight: 600; }
 .screen__keys .key--on { background: var(--teal); }
-.screen__keys .key--off { background: var(--warm); }
+.screen__keys .key--fn { background: var(--warm); color: var(--muted); }
 .screen__back { font-size: .8125rem; color: var(--muted); }
-.phone-cap { font-size: .875rem; color: var(--muted); text-align: center; }
-.phone-cap strong { color: var(--ink); }
-.phones--4 .phone-cap { text-align: left; }
+.kiosk-cap { font-size: .875rem; color: var(--muted); text-align: center; }
+.kiosk-cap strong { color: var(--ink); }
 
 /* ---------- Stats ----------------------------------------------------- */
 .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem 1rem; }
@@ -843,6 +858,10 @@ body:has(.stickybar) { padding-bottom: 5.5rem; }
 .doc__lines { margin-top: auto; display: flex; flex-direction: column; gap: .375rem; }
 .doc__lines span { height: 4px; background: var(--line-soft); display: block; }
 .doc__foot { font-size: .625rem; color: var(--muted); }
+
+/* ---------- Venue hero: the one-line case under the headline ------------ */
+.punch { font-family: var(--font-head); font-weight: 600; font-size: clamp(1.375rem, 1rem + 1.6vw, 2rem); line-height: 1.15; letter-spacing: -.02em; color: var(--teal-soft); }
+:lang(th) .punch { letter-spacing: 0; line-height: 1.35; }
 
 /* ---------- Director monogram (until a real portrait exists) ----------- */
 .monogram { width: 15rem; max-width: 100%; height: auto; display: block; }

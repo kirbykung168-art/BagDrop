@@ -50,7 +50,7 @@ src/content/placeholders.mjs    ← every unconfirmed value, marked PLACEHOLDER 
 src/content/copy/{en,th}.mjs    ← all prose, one module per language (zh.mjs kept for later)
 src/content/thai-nobreak.mjs    ← Thai compounds the browser must not split across lines
 src/lib/render.mjs              ← <head>, header, footer, sticky bar, JSON-LD, {token} filling
-src/lib/components.mjs          ← buttons, icons, phone mockups and every SVG illustration
+src/lib/components.mjs          ← buttons, icons, terminal-screen mockups and every SVG illustration
 src/lib/pages.mjs               ← one function per page
 src/styles/site.css             ← the design system (inlined into each page)
 build.mjs                       ← the generator

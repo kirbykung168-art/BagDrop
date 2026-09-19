@@ -55,7 +55,7 @@ export const placeholders = {
     depthM: 1.8,
   },
 
-  // PLACEHOLDER — app screens as designed in the phone mockups.
+  // PLACEHOLDER — sample values on the terminal's touchscreen mockups (there is no phone app).
   app: {
     bankId: 'BD-01',
     lockerNo: 12,
