@@ -6,6 +6,7 @@
  * page can use the same drawing twice without duplicate <pattern> ids.
  */
 import { esc, fill } from './util.mjs';
+import { IMAGES, sizeOf } from '../content/images.mjs';
 
 /* ------------------------------------------------------------ Icons */
 /* One stroke set, Lucide-style: 24 viewBox, currentColor, 1.75 stroke, round caps. */
@@ -84,6 +85,22 @@ export function accordion(items) {
     .join('')}</div>`;
 }
 
+/* ------------------------------------------------------- Illustrations */
+/**
+ * A handoff illustration from src/content/images.mjs.
+ * alt: '' marks it decorative. sizes: the CSS width it is laid out at.
+ * eager: only for the image above the fold; everything else loads lazily.
+ * tag: the "illustration" label — nothing here is a photograph of a real unit.
+ */
+export function illustration(slot, { alt = '', sizes, eager = false, tag = '', cls = '' }) {
+  const { widths } = IMAGES[slot];
+  const { width, height } = sizeOf(slot, widths[0]);
+  const srcset = widths.map((w) => `/img/${slot}-${w}.webp ${w}w`).join(', ');
+  const load = eager ? 'fetchpriority="high"' : 'loading="lazy" decoding="async"';
+  const img = `<img src="/img/${slot}-${widths[0]}.webp" srcset="${srcset}" sizes="${esc(sizes)}" width="${width}" height="${height}" alt="${esc(alt)}" ${load}>`;
+  return `<figure class="ill${cls ? ' ' + cls : ''}">${img}${tag ? `<figcaption class="ill__tag">${esc(tag)}</figcaption>` : ''}</figure>`;
+}
+
 /* ------------------------------------------------------ Draw-in helper */
 /* Adds pathLength="1" to stroked shapes so CSS can animate stroke-dashoffset
    without knowing each path's real length. Text is left alone. */
@@ -98,24 +115,27 @@ const drawable = (svg) => svg.replace(/<(path|rect|circle|line|polyline)\b(?![^>
  */
 export function lockerIllustration({ labels, callouts = true, hero = false, id = 'a', draw = false }) {
   const c = labels.callouts;
+  // Callouts get a gutter each side so their text never crosses the drawing.
+  const L = callouts ? -84 : 8, R = callouts ? 724 : 628;
+  const vb = callouts ? { x: -96, w: 832 } : { x: 0, w: 640 };
   const calloutGroup = callouts
     ? `<g font-family="Inter, system-ui, sans-serif" fill="#14282C">
-<path d="M206 262 L140 196 H8" fill="none" stroke="#14282C" stroke-width="1"/>
+<path d="M206 262 L140 196 H${L}" fill="none" stroke="#14282C" stroke-width="1"/>
 <circle cx="206" cy="262" r="3.5" fill="#00B2A9" stroke="#14282C" stroke-width="1"/>
-<text x="8" y="186" font-size="11" font-weight="600" letter-spacing="1.4">${esc(c[0].t)}</text>
-<text x="8" y="212" font-size="12" fill="#4A5F62">${esc(c[0].s)}</text>
-<path d="M386 250 L500 106 H628" fill="none" stroke="#14282C" stroke-width="1"/>
+<text x="${L}" y="186" font-size="11" font-weight="600" letter-spacing="1.4">${esc(c[0].t)}</text>
+<text x="${L}" y="212" font-size="12" fill="#4A5F62">${esc(c[0].s)}</text>
+<path d="M386 250 L500 106 H${R}" fill="none" stroke="#14282C" stroke-width="1"/>
 <circle cx="386" cy="250" r="3.5" fill="#00B2A9" stroke="#14282C" stroke-width="1"/>
-<text x="628" y="96" font-size="11" font-weight="600" letter-spacing="1.4" text-anchor="end">${esc(c[1].t)}</text>
-<text x="628" y="124" font-size="12" fill="#4A5F62" text-anchor="end">${esc(c[1].s)}</text>
-<path d="M470 190 L520 214 H628" fill="none" stroke="#14282C" stroke-width="1"/>
+<text x="${R}" y="96" font-size="11" font-weight="600" letter-spacing="1.4" text-anchor="end">${esc(c[1].t)}</text>
+<text x="${R}" y="124" font-size="12" fill="#4A5F62" text-anchor="end">${esc(c[1].s)}</text>
+<path d="M470 190 L520 214 H${R}" fill="none" stroke="#14282C" stroke-width="1"/>
 <circle cx="470" cy="190" r="3.5" fill="#00B2A9" stroke="#14282C" stroke-width="1"/>
-<text x="628" y="204" font-size="11" font-weight="600" letter-spacing="1.4" text-anchor="end">${esc(c[2].t)}</text>
-<text x="628" y="232" font-size="12" fill="#4A5F62" text-anchor="end">${esc(c[2].s)}</text>
-<path d="M505 452 H628" fill="none" stroke="#14282C" stroke-width="1"/>
+<text x="${R}" y="204" font-size="11" font-weight="600" letter-spacing="1.4" text-anchor="end">${esc(c[2].t)}</text>
+<text x="${R}" y="232" font-size="12" fill="#4A5F62" text-anchor="end">${esc(c[2].s)}</text>
+<path d="M505 452 H${R}" fill="none" stroke="#14282C" stroke-width="1"/>
 <circle cx="505" cy="452" r="3.5" fill="#00B2A9" stroke="#14282C" stroke-width="1"/>
-<text x="628" y="442" font-size="11" font-weight="600" letter-spacing="1.4" text-anchor="end">${esc(c[3].t)}</text>
-<text x="628" y="470" font-size="12" fill="#4A5F62" text-anchor="end">${esc(c[3].s)}</text>
+<text x="${R}" y="442" font-size="11" font-weight="600" letter-spacing="1.4" text-anchor="end">${esc(c[3].t)}</text>
+<text x="${R}" y="470" font-size="12" fill="#4A5F62" text-anchor="end">${esc(c[3].s)}</text>
 </g>`
     : '';
 
@@ -130,12 +150,12 @@ export function lockerIllustration({ labels, callouts = true, hero = false, id =
     handles.push(`M${x} ${y} V${y + 12}`);
   }
 
-  const svg = `<svg viewBox="0 0 640 520" width="640" height="520" role="img" aria-label="${esc(labels.aria)}" class="${draw ? 'draw' : ''}">
+  const svg = `<svg viewBox="${vb.x} 0 ${vb.w} 520" width="${vb.w}" height="520" role="img" aria-label="${esc(labels.aria)}" class="${draw ? 'draw' : ''}">
 <defs>
 <pattern id="dots-${id}" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.1" fill="#14282C" opacity="0.10"/></pattern>
 <marker id="arrow-${id}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#14282C"/></marker>
 </defs>
-<rect width="640" height="520" fill="url(#dots-${id})" stroke="none"/>
+<rect x="${vb.x}" width="${vb.w}" height="520" fill="url(#dots-${id})" stroke="none"/>
 <g transform="matrix(0.866 0.5 0.866 -0.5 150 347)">
 <rect x="-10" y="-10" width="320" height="110" fill="#E8F6F5" fill-opacity="0.6" stroke="#00B2A9" stroke-width="1.5" stroke-dasharray="6 5" vector-effect="non-scaling-stroke"/>
 </g>
@@ -181,7 +201,7 @@ export function lockerIllustration({ labels, callouts = true, hero = false, id =
 <path d="M11 14 V36 M23 14 V36" fill="none"/>
 </g>
 ${calloutGroup}
-<text x="624" y="512" font-family="Inter, system-ui, sans-serif" font-size="10" letter-spacing="1.2" fill="#7E9392" text-anchor="end">${esc(labels.illustrative)}</text>
+<text x="${R - 4}" y="512" font-family="Inter, system-ui, sans-serif" font-size="10" letter-spacing="1.2" fill="#7E9392" text-anchor="end">${esc(labels.illustrative)}</text>
 </svg>`;
   return draw ? drawable(svg) : svg;
 }
@@ -321,6 +341,19 @@ export function phone(kind, { s, app, money, lang, t = (x, v = {}) => fill(x, v)
 <div class="screen__cta screen__cta--teal">${esc(s.openLocker)}</div>`;
   }
   return `<div class="phone" aria-hidden="true"><div class="screen${dark ? ' screen--dark' : ''}">${inner}</div></div>`;
+}
+
+/* ------------------------------------------------ Director monogram */
+/** Locker-door grid with the director's initials on the one teal door. */
+export function monogram(name) {
+  const initials = name.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+  const doors = [];
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 3; c++) {
+    const on = r === 1 && c === 1;
+    const x = 20 + c * 68, y = 20 + r * 66;
+    doors.push(`<rect x="${x}" y="${y}" width="64" height="62" rx="6" fill="${on ? '#00B2A9' : '#1D3538'}" stroke="${on ? '#00B2A9' : '#2E4A4C'}"/>${on ? '' : `<path d="M${x + 54} ${y + 25}v12" stroke="#3E5E60" stroke-width="2" stroke-linecap="round"/>`}`);
+  }
+  return `<svg class="monogram" viewBox="0 0 240 300" width="240" height="300" aria-hidden="true"><rect width="240" height="300" rx="24" fill="#172F33"/>${doors.join('')}<text x="120" y="126" text-anchor="middle" font-family="Inter Tight, Inter, sans-serif" font-weight="700" font-size="26" letter-spacing="-0.5" fill="#0E1E21">${esc(initials)}</text></svg>`;
 }
 
 /* ------------------------------------------------- Profile document */

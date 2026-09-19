@@ -32,7 +32,7 @@ Status: 🔴 blocks launch · 🟠 blocks a page · 🟢 supplied
 | 12 | **Pricing rules** — per started hour; cap per calendar day; first hour at drop-off, extra time on collection | `/pricing/`, Home, How it works, Legal §1 | `placeholders.billing`, `placeholders.paymentTiming` | 🔴 built with the rules shown in the design; confirm before launch |
 | 13 | **Company profile PDF** | Home venue band; Venue Partners hero and Documents section | `static/company-profile.pdf`, `placeholders.profile` | 🔴 one-page stand-in labelled 2.4 MB |
 | 14 | **Unit dimensions** and footprint | What-fits diagram, spec table, floor plan | `placeholders.interior`, `placeholders.footprint` | 🟠 60 × 45 × 85 cm / 32 kg and ≈ 3.4 × 1.8 m from the design |
-| 15 | **Founder portrait** | Company page, Director section | `placeholders.portrait` | 🟠 empty frame until supplied; no other photography is wanted |
+| 15 | **Founder portrait** | Company page, Director section | `placeholders.portrait` | 🟠 initials monogram until supplied |
 | 16 | **Thai rendering of the registered address** | Thai pages, footer | `facts.mjs` → `company.addressLines.th` | 🟠 **rendered from the English address, unverified** — must be checked against the registration document |
 | 17 | **Thai spelling of the director's name** | Thai pages | `facts.mjs` → `company.director.name` | 🟠 shown in Latin script on all pages; not guessed |
 | 18 | **VAT wording** | Footer, Company | `facts.mjs` → `company.vatPending` | 🟠 currently shows "VAT registration: application in progress". No VAT number displayed. Set `vatPending: false` to hide the line. |

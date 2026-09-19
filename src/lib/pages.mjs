@@ -5,7 +5,7 @@
 import { COPY, company, product, placeholders, esc, money, tFor, hrefFor, thb } from './render.mjs';
 import {
   icon, eyebrow, btn, link, statusLine, row, paymentMarks, accordion,
-  lockerIllustration, floorPlan, whatFits, priceCapChart, emptyLocker, spot, phone, profileDoc,
+  illustration, lockerIllustration, floorPlan, whatFits, priceCapChart, emptyLocker, phone, profileDoc, monogram,
 } from './components.mjs';
 
 const ph = placeholders;
@@ -18,6 +18,9 @@ function head({ eyebrow: e, h2, lead, cls = 'h2', link: l, mod = '', leadCls = '
   return `<div class="sec-head${l ? ' sec-head--row' : ''}">${text}${l || ''}</div>`;
 }
 
+/** "Who it's for" cards: the scene behind each one. Decorative — the heading says it. */
+const WHO_IMG = { flight: 'whoFlight', shopping: 'whoShopping', evening: 'whoEvening' };
+
 const priceRow = (k, v) => `<div class="row"><span>${esc(k)}</span><span class="num row__v">${esc(v)}</span></div>`;
 
 /* ---------------------------------------------------------------- HOME */
@@ -25,6 +28,7 @@ export function home(lang) {
   const c = COPY[lang], p = c.home, t = tFor(lang), m = (n) => money(lang, n);
   const price = product.price;
   const locker = { ...c.diagrams.locker };
+  const im = c.diagrams.images;
 
   /* 1 — Hero + fact strip */
   const facts = p.facts.map((f) => `<div class="fact"><span class="ic">${icon(f.icon)}</span><div><div class="fact__h"><span class="hide-m">${esc(f.h)}</span><span class="hide-d">${esc(f.hShort || f.h)}</span></div><div class="fact__s">${esc(f.s)}</div></div></div>`).join('');
@@ -36,7 +40,7 @@ export function home(lang) {
   <div class="chip"><span class="num">${esc(m(price.hourly))}</span><span class="small">${esc(c.ui.perHour)}</span><span class="chip__sep" aria-hidden="true"></span><span class="num"><span class="hide-m">${esc(m(price.dailyCap))}</span><span class="hide-d">${thb(price.dailyCap)}</span></span><span class="small"><span class="hide-m">${esc(c.ui.maxPerDay)}</span><span class="hide-d">${esc(c.ui.maxPerDayShort)}</span></span></div>
   <div class="btn-row">${btn(t(c.ui.lineChat), company.lineUrl, 'primary', { rel: 'noopener' })}${btn(c.ui.howItWorks, hrefFor(lang, 'how'), 'outline')}</div>
   <div class="status-wrap"><span class="hide-m">${statusLine(c.statusNow)}</span><span class="hide-d">${statusLine(c.statusShort)}</span></div>
-  <div class="fig fig--tall">${lockerIllustration({ labels: locker, callouts: false, hero: true, id: 'hero' })}</div>
+  <div class="fig fig--tall fig--blend">${illustration('hero', { alt: im.hero, tag: im.tag, eager: true, sizes: '(min-width: 64rem) 44vw, 100vw' })}</div>
 </div>
 <div class="facts">${facts}</div>`)}</section>`;
 
@@ -75,7 +79,7 @@ ${head({ eyebrow: hw.eyebrow, h2: hw.h2, lead: hw.lead, link: link(c.ui.walkthro
   const who = section('', `
 <div class="stack stack--xl">
 ${head({ eyebrow: p.who.eyebrow, h2: p.who.h2 })}
-<div class="grid grid--3">${p.who.cards.map((k) => `<div class="card card--l who"><div class="card__ill${k.warm ? ' card__ill--warm' : ''} hide-m">${spot[k.spot]}</div><div class="who__row"><span class="ic ic--l hide-d">${icon(k.icon, { stroke: 1.6 })}</span><div class="stack stack--s"><h3 class="h3">${esc(k.h)}</h3><p class="body"><span class="hide-m">${esc(k.p)}</span><span class="hide-d">${esc(k.short)}</span></p></div></div></div>`).join('')}</div>
+<div class="grid grid--3">${p.who.cards.map((k) => `<div class="card card--l who"><div class="card__ill${k.warm ? ' card__ill--warm' : ''} hide-m">${illustration(WHO_IMG[k.spot], { sizes: '24rem' })}</div><div class="who__row"><span class="ic ic--l hide-d">${icon(k.icon, { stroke: 1.6 })}</span><div class="stack stack--s"><h3 class="h3">${esc(k.h)}</h3><p class="body"><span class="hide-m">${esc(k.p)}</span><span class="hide-d">${esc(k.short)}</span></p></div></div></div>`).join('')}</div>
 </div>`);
 
   /* 6 — The unit */
@@ -175,10 +179,12 @@ export function how(lang) {
   <div class="c7-12 fig fig--white fig--tall">${lockerIllustration({ labels: c.diagrams.locker, callouts: false, hero: true, id: 'how' })}</div>
 </div>`);
 
+  const im = c.diagrams.images;
+  const scenes = ['stepScan', 'stepPay', 'stepStore', 'stepCollect'];
   const steps = section('', `
 <div class="stack stack--xl">
 ${head({ eyebrow: p.stepsEyebrow, h2: p.stepsH2 })}
-<div class="phones phones--4">${p.steps.map((s) => `<div class="phone-wrap">${phone(s.screen, phoneArgs)}<div class="stack stack--s"><span class="journey__n num" style="font-size:.9375rem">${esc(s.n)}</span><h3 class="h3">${esc(s.h)}</h3><p class="body">${esc(t(s.p))}</p></div></div>`).join('')}</div>
+<div class="phones phones--4">${p.steps.map((s, i) => `<div class="phone-wrap">${illustration(scenes[i], { alt: im[scenes[i]], tag: im.tag, cls: 'ill--scene', sizes: '(min-width: 64rem) 20rem, (min-width: 48rem) 46vw, 100vw' })}${phone(s.screen, phoneArgs)}<div class="stack stack--s"><span class="journey__n num" style="font-size:.9375rem">${esc(s.n)}</span><h3 class="h3">${esc(s.h)}</h3><p class="body">${esc(t(s.p))}</p></div></div>`).join('')}</div>
 </div>`);
 
   const wrong = section('section--pale', `
@@ -263,7 +269,7 @@ export function venues(lang) {
   <div class="c1-6 stack stack--l">${eyebrow(p.eyebrow, 'light')}<h1 class="h1 h1--s">${esc(p.h1)}</h1><p class="lead measure-s">${esc(p.lead)}</p>
     <div class="btn-row btn-row--stack">${btn(c.ui.callDirector, company.tel.href, 'primary')}${btn(t(c.ui.profilePdfSize), ph.profile.href, 'outline', { attrs: 'download' })}</div>
     ${statusLine(c.status)}</div>
-  <div class="c7-12 fig fig--white fig--tall">${lockerIllustration({ labels: c.diagrams.locker, callouts: true, id: 'venue', draw: true })}</div>
+  <div class="c7-12 fig fig--white fig--tall"><div class="hide-m fig__in">${lockerIllustration({ labels: c.diagrams.locker, callouts: true, id: 'venue', draw: true })}</div><div class="hide-d fig__in">${lockerIllustration({ labels: c.diagrams.locker, callouts: false, id: 'venue-m' })}</div></div>
 </div>`);
 
   const strip = `<div class="section--ink-deep">${wrap(`<div class="stats stats--strip">${p.strip.map((s) => `<div class="stat stat--flat"><span class="stat__n num">${esc(t(s.n))}</span><span class="stat__h">${esc(s.s)}</span></div>`).join('')}</div>`)}</div>`;
@@ -271,6 +277,7 @@ export function venues(lang) {
   const offer = section('', `
 <div class="stack stack--xl">
 ${head({ eyebrow: p.offer.eyebrow, h2: p.offer.h2 })}
+${illustration('venueFloor', { alt: c.diagrams.images.venueFloor, tag: c.diagrams.images.tag, cls: 'ill--banner', sizes: '(min-width: 80rem) 76rem, 100vw' })}
 <div class="grid grid--3">${p.offer.cards.map((k) => `<div class="card"><span class="ic${k.on ? ' ic--teal' : ''}">${icon(k.icon)}</span><h3 class="h3">${esc(k.h)}</h3><p class="body">${esc(k.p)}</p></div>`).join('')}</div>
 </div>`);
 
@@ -343,7 +350,7 @@ export function companyPage(lang) {
 
   const director = section('section--ink', `
 <div class="grid grid--12 center" style="row-gap:2.5rem">
-  <div class="c1-4"><div class="portrait">${esc(c.diagrams.portrait)}</div></div>
+  <div class="c1-4">${monogram(company.director.name)}</div>
   <div class="c5-12 stack stack--l">${eyebrow(p.director.eyebrow, 'light')}<h2 class="h2">${esc(company.director.name)}</h2><p class="lead" style="margin-top:-.75rem">${esc(company.director.role[lang] || company.director.role.en)}</p><p class="lead measure-m" style="color:#D5E0DF">${esc(p.director.p)}</p>
     <div class="btn-row btn-row--stack">${btn(company.tel.display[lang] || company.tel.display.en, company.tel.href, 'primary')}${btn(company.email, `mailto:${company.email}`, 'outline')}${btn(t(c.ui.lineAt), company.lineUrl, 'line', { rel: 'noopener' })}</div></div>
 </div>`);

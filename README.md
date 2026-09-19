@@ -39,6 +39,7 @@ There is **no CMS, no framework and no client-side JavaScript**. `build.mjs` is 
 | `node tools/audit.mjs` | In-browser check at 320px and 390px: overflow, 44px targets |
 | `node tools/verify-headers.mjs` | Loads pages under the production CSP and fails on violations |
 | `node tools/make-assets.mjs` | Regenerates OG cards and PNG icons |
+| `npm run images` | Crops and encodes the handoff illustrations to `static/img/` (table: `src/content/images.mjs`) |
 | `node tools/copy-sheet.mjs` | Regenerates the Thai review sheet |
 
 ## Structure
@@ -136,7 +137,8 @@ heaviest HTML gzipped **21 KB**; every diagram SVG under 40 KB.
 
 How: zero JavaScript; CSS inlined; fonts declared with `unicode-range` so an
 English page never fetches the Thai face; the `<h1>` face preloaded because it
-is the LCP element; inline SVG for every illustration.
+is the LCP element; inline SVG for every diagram; the drawn scenes are WebP
+at two widths (10–100 KB each), lazy-loaded except the hero.
 
 ## Deployment
 

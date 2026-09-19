@@ -21,7 +21,7 @@ the copy string to edit is named too.
 | `footprint` | ≈ 3.4 × 1.8 m including customer zone | Floor plan on Home and Venue Partners | Measured footprint of the production unit |
 | `app` | Locker bank "BD-01", locker 12, PIN 4827, 14 available, "+66 •• ••• 1234", stored 3 h 12 min / THB 200 | Phone mockups on Home and How it works | Screens from the real web app once built, or leave as illustrative |
 | `profile` | `/company-profile.pdf` one-page stand-in, labelled "2.4 MB", dated 2026 | Home venue band; Venue Partners hero and "Documents" section | The real company profile PDF in `static/company-profile.pdf`; update `sizeLabel` to its actual size |
-| `portrait` | Empty dashed frame, "Portrait · founder to supply" | Company page, Director section | A portrait supplied by the founder (add as an inline `<img>` in `pages.mjs → companyPage`, then remove the no-`<img>` assertion in `tools/qa.mjs`) |
+| `portrait` | Locker-door monogram with the director's initials (no placeholder wording) | Company page, Director section | A portrait supplied by the founder: add a slot in `src/content/images.mjs`, then swap `monogram()` for `illustration()` in `pages.mjs → companyPage` |
 | `paymentMarks` | Typed "VISA", "Mastercard", "PromptPay" stand-ins | Footer on every page; Home pricing; Pricing page | Official Visa, Mastercard and PromptPay artwork used per each brand's guidelines (replace `paymentMarks()` in `components.mjs`) |
 | `legalUpdated` | "Last updated 19 September 2026" | Legal page hero | The date the legal adviser signs off the terms |
 
