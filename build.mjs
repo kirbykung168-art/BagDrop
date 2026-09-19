@@ -14,7 +14,7 @@ import { dirname, join, relative } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
 import { layout, PAGES, COPY, site, urlFor } from './src/lib/render.mjs';
-import { RENDERERS } from './src/lib/pages.mjs';
+import { RENDERERS, STICKY } from './src/lib/pages.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 // Output to public/ deliberately: it is the directory Vercel serves by
@@ -66,6 +66,7 @@ async function main() {
         altLinks,
         switchLinks,
         canonicalPath,
+        sticky: STICKY.has(page.key),
       });
       written.push(await write(join(canonicalPath.slice(1), 'index.html'), html));
     }
@@ -82,6 +83,7 @@ async function main() {
       altLinks: {},
       switchLinks,
       canonicalPath: `/${lang}/404.html`,
+      sticky: false,
     });
     written.push(await write(`${lang}/404.html`, html));
     if (lang === site.defaultLang) written.push(await write('404.html', html));
@@ -98,7 +100,7 @@ async function main() {
 <meta http-equiv="refresh" content="0; url=${urlFor(site.defaultLang, '')}">
 </head>
 <body>
-<p><a href="${urlFor('en', '')}">English</a> &middot; <a href="${urlFor('th', '')}">ไทย</a> &middot; <a href="${urlFor('zh', '')}">中文</a></p>
+<p><a href="${urlFor('en', '')}">English</a> &middot; <a href="${urlFor('th', '')}">ไทย</a></p>
 </body>
 </html>
 `;
