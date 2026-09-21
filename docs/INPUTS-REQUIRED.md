@@ -21,7 +21,7 @@ Status: 🔴 blocks launch · 🟠 blocks a page · 🟢 supplied
 | 6 | **Full prohibited-items list** | Home rules; Legal §2 | `placeholders.prohibited`, `copy → legal.sections[prohibited]` | 🔴 draft list from the design |
 | 7 | **Maximum storage period** before property is abandoned | Home rules; How it works; Legal §4 | `placeholders.storage` | 🔴 3 days + 30 days held, placeholder from the design |
 | 8 | **Native Thai copy reviewer** | Every Thai page (§5) | `docs/th-copy-sheet.md` | 🔴 521 strings awaiting review |
-| 9 | **Native Simplified Chinese reviewer** | Chinese pages, when reinstated | `docs/zh-copy-sheet.md` | ⚪ deferred — Chinese pages are not built until complete (brief §5) |
+| 9 | **Native Simplified Chinese reviewer** | `/zh/` Home, How it works, Pricing, 404 | `docs/zh-copy-sheet.md` | 🔴 live but machine-drafted: needs a native review, as the Thai does |
 | 10 | **Domain + registrar access in client's name** | Launch (§12) | — | 🔴 `bagdrop.co.th` preferred; a .co.th requires company documents, which is itself a credibility signal |
 | 11 | **Repository / hosting in client's name** | Handover (§12) | — | 🟠 see README "Handover" |
 
@@ -43,7 +43,7 @@ Status: 🔴 blocks launch · 🟠 blocks a page · 🟢 supplied
 | # | Input | Decision | Status |
 |---|---|---|---|
 | 20 | **Default language / `x-default`** | English. `/` redirects to `/en/`. | 🟢 confirmed by client |
-| 21 | **Simplified Chinese** | Toggle removed and pages not built until Chinese is complete (brief §5). Chinese survives only as the language sample on How it works. `copy/zh.mjs` is kept. | 🟢 per brief |
+| 21 | **Simplified Chinese** | Built for the traveller-facing pages only (Home, How it works, Pricing, 404) at the founder's request, 20 Sep 2026. Venue partners, Company and Legal stay EN/TH. | 🟢 decided |
 | 22 | **Wordmark** | The word "BagDrop" as live text in Inter Tight 700. No icon or logo mark. | 🟢 per brief §3 |
 | 23 | **Favicon** | Text-only "B" from the Inter Tight Bold outline, ink on teal (`static/favicon.svg`), per brief §8. | 🟢 per brief |
 

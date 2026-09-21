@@ -16,6 +16,7 @@ import { gzipSync } from 'node:zlib';
 import { layout, PAGES, COPY, site, urlFor } from './src/lib/render.mjs';
 import { RENDERERS, STICKY } from './src/lib/pages.mjs';
 import THAI_NOBREAK from './src/content/thai-nobreak.mjs';
+import ZH_NOBREAK from './src/content/zh-nobreak.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 // Output to public/ deliberately: it is the directory Vercel serves by
@@ -37,15 +38,22 @@ const write = async (rel, contents) => {
  * and Chrome's Thai dictionary still finds the break opportunities between
  * words. (Word joiners were tried first: they blind the dictionary entirely.)
  */
-const COMPOUNDS = [...THAI_NOBREAK].sort((a, b) => b.length - a.length);
-const NB = /(\d)\s(บาท|ชม\.|กก\.|ตร\.ม\.|ลิตร|วัน|ช่อง)/g;
-function bindThai(html) {
+const NB = /(\d)\s(บาท|ชม\.|กก\.|ตร\.ม\.|ลิตร|วัน|ช่อง|泰铢|小时|公斤|平方米|升|天|个)/g;
+/** Chinese gets the same treatment from zh-nobreak.mjs: it has no spaces either. */
+const BIND = {
+  th: { words: [...THAI_NOBREAK].sort((a, b) => b.length - a.length), script: /[\u0E00-\u0E7F]/ },
+  zh: { words: [...ZH_NOBREAK].sort((a, b) => b.length - a.length), script: /[\u4E00-\u9FFF]/ },
+};
+function bindWords(lang, html) {
+  const rule = BIND[lang];
+  if (!rule) return html;
   return html.split(/(<(?:script|style|svg|title)[\s\S]*?<\/(?:script|style|svg|title)>)/).map((part, i) => {
     if (i % 2) return part;
-    return part.replace(/>([^<]*[\u0E00-\u0E7F][^<]*)</g, (m, text) => {
-      let t = text.replace(NB, '$1\u00A0$2');
-      for (const w of COMPOUNDS) t = t.split(w).join(`<span class="nb">${w}</span>`);
-      return '>' + t + '<';
+    return part.replace(/>([^<]+)</g, (m, text) => {
+      if (!rule.script.test(text)) return m;
+      // One pass, longest word first, so a word inside a longer one is not wrapped twice.
+      const re = new RegExp(rule.words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'g');
+      return '>' + text.replace(NB, '$1\u00A0$2').replace(re, '<span class="nb">$&</span>') + '<';
     });
   }).join('');
 }
@@ -79,7 +87,7 @@ async function main() {
         site.langs.map((l) => [l, page.langs.includes(l) ? urlFor(l, page.slug) : urlFor(l, '')])
       );
       const canonicalPath = urlFor(lang, page.slug);
-      const html = (lang === 'th' ? bindThai : (x) => x)(layout({
+      const html = bindWords(lang, layout({
         lang,
         pageKey: page.key,
         main: RENDERERS[page.key](lang),
@@ -96,7 +104,7 @@ async function main() {
   // 404 — one per language, plus a root copy for hosts that serve a single file.
   for (const lang of site.langs) {
     const switchLinks = Object.fromEntries(site.langs.map((l) => [l, `/${l}/404.html`]));
-    const html = (lang === 'th' ? bindThai : (x) => x)(layout({
+    const html = bindWords(lang, layout({
       lang,
       pageKey: 'notFound',
       main: RENDERERS.notFound(lang),

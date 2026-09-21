@@ -17,7 +17,8 @@ const BASE = process.env.BASE || 'http://localhost:3000';
 const PATHS = [
   '/en/', '/en/how-it-works/', '/en/pricing/', '/en/venue-partners/', '/en/company/', '/en/legal/',
   '/th/', '/th/how-it-works/', '/th/pricing/', '/th/venue-partners/', '/th/company/', '/th/legal/',
-  '/en/404.html', '/th/404.html',
+  '/zh/', '/zh/how-it-works/', '/zh/pricing/',
+  '/en/404.html', '/th/404.html', '/zh/404.html',
 ];
 // 320px is the narrowest width WCAG 2.2 reflow (1.4.10) requires support for.
 const WIDTHS = [320, 390];

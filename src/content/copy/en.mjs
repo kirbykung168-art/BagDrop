@@ -82,7 +82,7 @@ export default {
       stepStart: 'Illustration: a traveller taps the touchscreen on the locker terminal to choose a locker.',
       stepPay: 'Illustration: she holds her phone to the terminal to pay by PromptPay from her banking app.',
       stepStore: 'Illustration: she slides her suitcase into the open locker.',
-      stepCollect: 'Illustration: a traveller lifts his suitcase out of the locker he has reopened.',
+      stepCollect: 'Illustration: she types her PIN on the touchscreen; her suitcase waits in the open locker beside her.',
       venueFloor: 'Illustration: a BagDrop locker bank on a shopping-centre floor, between planters and seating, as shoppers pass.',
     },
     locker: {
@@ -481,7 +481,7 @@ export default {
     director: {
       eyebrow: 'Director',
       role: 'Founder & Director',
-      p: 'BagDrop is run by its founder. Venue partners deal with him directly, from the first conversation to the day the unit goes live.',
+      p: 'BagDrop is run by its founder. Venue partners deal with the founder directly, from the first conversation to the day the unit goes live.',
     },
   },
 

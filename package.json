@@ -2,7 +2,7 @@
   "name": "bagdrop-site",
   "version": "1.0.0",
   "private": true,
-  "description": "Static bilingual (EN/TH) website for BagDrop, operated by 8Venture Co., Ltd.",
+  "description": "Static EN/TH website for BagDrop, with Simplified Chinese traveller pages, operated by 8Venture Co., Ltd.",
   "type": "module",
   "scripts": {
     "build": "node build.mjs",

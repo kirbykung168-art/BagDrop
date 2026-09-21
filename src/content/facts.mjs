@@ -85,9 +85,9 @@ export const paymentMarks = ['Visa', 'Mastercard', 'PromptPay'];
 export const site = {
   origin: 'https://bagdrop.co.th',
   defaultLang: 'en', // x-default → /en/ (client decision)
-  // English and Thai only (brief §5). Chinese copy stays in src/content/copy/zh.mjs
-  // for when those pages are completed; until then it is neither built nor linked.
-  langs: ['en', 'th'],
+  // Chinese covers the traveller-facing pages only; see PAGES in render.mjs for
+  // which page exists in which language. Elsewhere a Chinese visitor gets English.
+  langs: ['en', 'th', 'zh'],
 };
 
 /** Formats a THB amount with grouping, for tabular-figure display. */

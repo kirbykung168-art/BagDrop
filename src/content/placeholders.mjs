@@ -47,6 +47,7 @@ export const placeholders = {
   prohibited: {
     en: ['Hazardous goods', 'Perishables', 'Cash and valuables', 'Animals'],
     th: ['วัตถุอันตราย', 'ของสด', 'เงินสดและของมีค่า', 'สัตว์'],
+    zh: ['危险品', '易腐物品', '现金和贵重物品', '动物'],
   },
 
   // PLACEHOLDER — floor plan dimensions, including the customer zone.
@@ -62,7 +63,7 @@ export const placeholders = {
     pin: '4827',
     available: 14,
     maskedPhone: '+66 •• ••• 1234',
-    storedFor: { en: '3 h 12 min', th: '3 ชม. 12 นาที' },
+    storedFor: { en: '3 h 12 min', th: '3 ชม. 12 นาที', zh: '3 小时 12 分钟' },
     storedTotal: 200,
   },
 

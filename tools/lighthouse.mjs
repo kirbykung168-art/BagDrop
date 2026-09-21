@@ -9,7 +9,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 
 const BASE = process.env.BASE || 'http://localhost:3000';
-const PATHS = process.argv.slice(2).length ? process.argv.slice(2) : ['/en/', '/th/', '/en/how-it-works/', '/en/pricing/', '/en/venue-partners/', '/en/company/', '/en/legal/'];
+const PATHS = process.argv.slice(2).length ? process.argv.slice(2) : ['/en/', '/th/', '/zh/', '/en/how-it-works/', '/en/pricing/', '/en/venue-partners/', '/en/company/', '/en/legal/'];
 const CHROME = ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/Applications/Chromium.app/Contents/MacOS/Chromium'].find((p) => existsSync(p));
 
 let worst = 100;

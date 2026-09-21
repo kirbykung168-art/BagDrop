@@ -1,17 +1,20 @@
 import { company, product, site, thb, placeholders } from '../content/facts.mjs';
 import en from '../content/copy/en.mjs';
 import th from '../content/copy/th.mjs';
+import zh from '../content/copy/zh.mjs';
 import { esc, fill } from './util.mjs';
-import { icon, btn, paymentMarks, illustration } from './components.mjs';
+import { icon, btn, paymentMarks, illustration, intro } from './components.mjs';
 
-export const COPY = { en, th };
+export const COPY = { en, th, zh };
 export { company, product, site, thb, placeholders, esc, fill };
 
 /** Page registry. `langs` drives routing, the nav, hreflang and the sitemap. */
 export const PAGES = [
-  { key: 'home',    slug: '',                langs: ['en', 'th'] },
-  { key: 'how',     slug: 'how-it-works',    langs: ['en', 'th'] },
-  { key: 'pricing', slug: 'pricing',         langs: ['en', 'th'] },
+  // Chinese: the traveller-facing pages. Venue, company and legal are B2B or
+  // legal text and stay EN/TH; hrefFor() sends a Chinese visitor to the English one.
+  { key: 'home',    slug: '',                langs: ['en', 'th', 'zh'] },
+  { key: 'how',     slug: 'how-it-works',    langs: ['en', 'th', 'zh'] },
+  { key: 'pricing', slug: 'pricing',         langs: ['en', 'th', 'zh'] },
   { key: 'venues',  slug: 'venue-partners',  langs: ['en', 'th'] },
   { key: 'company', slug: 'company',         langs: ['en', 'th'] },
   { key: 'legal',   slug: 'legal',           langs: ['en', 'th'] },
@@ -29,11 +32,14 @@ export function hrefFor(lang, key) {
 export const PRELOAD = {
   en: ['intertight-600', 'inter-400', 'inter-600', 'intertight-700'],
   th: ['thai-600', 'thai-400', 'intertight-600', 'intertight-700'],
+  // Both Chinese weights: preloading only the headline face was tried and scored
+  // worse (91–94 vs 95–96) and shifted layout when the body face arrived late.
+  zh: ['sc-700', 'sc-400', 'intertight-600', 'inter-400'],
 };
 
 /** Currency reads differently in each language; the numeral never changes. */
 export function money(lang, n) {
-  return lang === 'th' ? `${thb(n)} บาท` : `THB ${thb(n)}`;
+  return lang === 'th' ? `${thb(n)} บาท` : lang === 'zh' ? `${thb(n)} 泰铢` : `THB ${thb(n)}`;
 }
 export const moneyText = money;
 
@@ -54,7 +60,7 @@ export function vars(lang) {
     year: 2026,
     liability: money(lang, ph.liabilityThb),
     maxDays: ph.storage.maxDays,
-    maxDaysWord: lang === 'th' ? 'สาม' : 'three',
+    maxDaysWord: { th: 'สาม', zh: '三' }[lang] || 'three',
     heldDays: ph.storage.heldDays,
     w: ph.interior.widthCm, d: ph.interior.depthCm, h: ph.interior.heightCm, kg: ph.interior.maxKg,
     litres: ph.fits.backpackLitres,
@@ -75,10 +81,12 @@ function header(lang, copy, currentKey, switchLinks) {
   const t = tFor(lang);
   const items = PAGES.filter((p) => p.key !== 'home').map((p) => {
     const cur = p.key === currentKey ? ' aria-current="page"' : '';
-    return `<a href="${urlFor(lang, p.slug)}"${cur}>${esc(copy.nav[p.key])}</a>`;
+    const foreign = p.langs.includes(lang) ? '' : ' hreflang="en"';
+    return `<a href="${hrefFor(lang, p.key)}"${foreign}${cur}>${esc(copy.nav[p.key])}</a>`;
   });
-  const other = site.langs.find((l) => l !== lang);
-  const oc = COPY[other];
+  const others = site.langs.filter((l) => l !== lang).map((l) =>
+    `<span class="lang__sep" aria-hidden="true">/</span>
+          <a href="${switchLinks[l]}" lang="${COPY[l].htmlLang}" hreflang="${COPY[l].htmlLang}">${esc(COPY[l].shortLabel)}</a>`).join('\n          ');
   const lineLabel = t(copy.ui.lineChat);
 
   return `<header class="hdr">
@@ -91,8 +99,7 @@ function header(lang, copy, currentKey, switchLinks) {
       <div class="hdr__right">
         <nav class="lang" aria-label="${esc(copy.ui.langLabel)}">
           <span aria-current="true" lang="${copy.htmlLang}">${esc(copy.shortLabel)}</span>
-          <span class="lang__sep" aria-hidden="true">/</span>
-          <a href="${switchLinks[other]}" lang="${oc.htmlLang}" hreflang="${oc.htmlLang}">${esc(oc.shortLabel)}</a>
+          ${others}
         </nav>
         ${btn(lineLabel, company.lineUrl, 'line', { cls: 'btn--sm hdr__line', icon: 'chat', rel: 'noopener' })}
         <details class="menu">
@@ -130,7 +137,7 @@ function footer(lang, copy) {
     ? `<a class="foot__reg" href="${company.dbdUrl}" rel="noopener">${esc(company.regNo)}</a>`
     : `<span class="foot__reg">${esc(company.regNo)}</span>`;
   const siteLinks = PAGES.filter((p) => p.key !== 'home')
-    .map((p) => `<a href="${urlFor(lang, p.slug)}">${esc(p.key === 'legal' ? copy.nav.legalFooter : copy.nav[p.key])}</a>`)
+    .map((p) => `<a href="${hrefFor(lang, p.key)}"${p.langs.includes(lang) ? '' : ' hreflang="en"'}>${esc(p.key === 'legal' ? copy.nav.legalFooter : copy.nav[p.key])}</a>`)
     .join('\n      ');
 
   return `<footer class="foot">
@@ -204,7 +211,7 @@ export function layout({ lang, pageKey, main, css, altLinks, switchLinks, canoni
   const copy = COPY[lang];
   const t = tFor(lang);
   const page = copy[pageKey];
-  const ogLocale = { en: 'en_US', th: 'th_TH' }[lang];
+  const ogLocale = { en: 'en_US', th: 'th_TH', zh: 'zh_CN' }[lang];
   const title = t(page.title);
   const description = t(page.description);
 
@@ -251,6 +258,7 @@ ${main}
 </main>
 ${footer(lang, copy)}
 ${sticky ? stickyBar(lang, copy) : ''}
+${pageKey === 'home' ? intro() : ''}
 </body>
 </html>
 `;

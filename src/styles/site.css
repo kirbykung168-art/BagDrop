@@ -44,7 +44,21 @@
   src: url('/fonts/thai-600.woff2') format('woff2');
   unicode-range: U+0E01-0E3E, U+0E40-0E5B;
 }
-/* Four glyphs — 你好 and 中文 — for the language sample. Nothing else is Chinese. */
+/* Noto Sans SC for the Chinese pages, subset to the characters they use. Only
+   the :lang(zh-Hans) token block below names this family, so an English or
+   Thai page has no rule that can ever request it. */
+@font-face {
+  font-family: 'Noto Sans SC'; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('/fonts/sc-400.woff2') format('woff2');
+  unicode-range: U+2E80-303F, U+3400-4DBF, U+4E00-9FFF, U+FF00-FFEF, U+2014, U+2018-201D, U+2026, U+00B7;
+}
+@font-face {
+  font-family: 'Noto Sans SC'; font-style: normal; font-weight: 700; font-display: swap;
+  src: url('/fonts/sc-700.woff2') format('woff2');
+  unicode-range: U+2E80-303F, U+3400-4DBF, U+4E00-9FFF, U+FF00-FFEF, U+2014, U+2018-201D, U+2026, U+00B7;
+}
+/* Four glyphs — 你好 and 中文 — for the language sample and the switcher on
+   English and Thai pages. */
 @font-face {
   font-family: 'SC Sample'; font-style: normal; font-weight: 500; font-display: swap;
   src: url('/fonts/sc-sample-500.woff2') format('woff2');
@@ -121,7 +135,9 @@
   --fast: 150ms;
 }
 
-/* Thai is never tracked tight and needs room for tone marks (§3). */
+/* Thai is never tracked tight and needs room for tone marks (§3). Component
+   rules written :is(:lang(th), :lang(zh-Hans)) undo Latin tracking and tight
+   leading for both scripts. */
 :lang(th) {
   --font-body: 'IBM Plex Sans Thai', 'Inter', system-ui, sans-serif;
   --font-head: 'IBM Plex Sans Thai', 'Inter Tight', 'Inter', system-ui, sans-serif;
@@ -129,7 +145,19 @@
   --lh-body: 1.7;
 }
 [lang="th"] { font-family: var(--font-thai); letter-spacing: 0; }
-[lang="zh-Hans"] { font-family: 'SC Sample', 'PingFang SC', 'Noto Sans SC', sans-serif; letter-spacing: 0; }
+/* Chinese is never tracked tight; the Latin in it (BagDrop, PIN, THB) stays Inter. */
+:lang(zh-Hans) {
+  --font-body: 'Inter', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-head: 'Inter Tight', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --track-h1: 0; --track-h2: 0; --track-h3: 0;
+  --lh-body: 1.75;
+}
+/* Headlines: even out the lines so one word is never left alone on the last. */
+:lang(zh-Hans) :is(.h1, .h2, .h3, .statement__text, .nf__h1, .lead) { text-wrap: balance; line-break: strict; }
+/* A Chinese fragment on an English or Thai page (the switcher, the language
+   sample): the four-glyph face, then the system. 'Noto Sans SC' is deliberately
+   NOT in this chain — that is what once pulled the full face onto English pages. */
+html:not(:lang(zh-Hans)) [lang="zh-Hans"] { font-family: 'SC Sample', 'PingFang SC', 'Microsoft YaHei', sans-serif; letter-spacing: 0; }
 :lang(en) [lang="th"] { line-height: 1.7; }
 .nb { white-space: nowrap; } /* Thai compounds bound at build time (thai-nobreak.mjs) */
 
@@ -157,7 +185,7 @@ button { font: inherit; color: inherit; }
 strong, b { font-weight: 600; }
 .num, .tnum { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
 .num { font-family: var(--font-head); letter-spacing: var(--track-num); }
-:lang(th) .num { letter-spacing: -.02em; }
+:is(:lang(th), :lang(zh-Hans)) .num { letter-spacing: -.02em; }
 
 /* ---------- Focus & skip ---------------------------------------- */
 :where(a, button, summary, [tabindex]):focus-visible {
@@ -228,7 +256,7 @@ strong, b { font-weight: 600; }
   font-size: var(--t-eyebrow); font-weight: 600; letter-spacing: .16em;
   text-transform: uppercase; color: var(--teal-text);
 }
-:lang(th) .eyebrow { letter-spacing: .06em; text-transform: none; font-size: .8125rem; }
+:is(:lang(th), :lang(zh-Hans)) .eyebrow { letter-spacing: .06em; text-transform: none; font-size: .8125rem; }
 .eyebrow--light { color: var(--teal-soft); }
 .eyebrow--ink { color: var(--ink-deep); }
 .h1 { font-size: var(--t-h1); line-height: .98; letter-spacing: var(--track-h1); }
@@ -237,9 +265,9 @@ strong, b { font-weight: 600; }
 .h2--s { font-size: var(--t-h2-s); line-height: 1.05; }
 .h2--xs { font-size: var(--t-h2-xs); line-height: 1.1; letter-spacing: -.03em; }
 .h3 { font-size: var(--t-h3); line-height: 1.25; letter-spacing: var(--track-h3); }
-:lang(th) .h1, :lang(th) .h1--s { line-height: 1.2; }
-:lang(th) .h2, :lang(th) .h2--s, :lang(th) .h2--xs { line-height: 1.25; }
-:lang(th) .h3 { line-height: 1.45; }
+:is(:lang(th), :lang(zh-Hans)) .h1, :is(:lang(th), :lang(zh-Hans)) .h1--s { line-height: 1.2; }
+:is(:lang(th), :lang(zh-Hans)) .h2, :is(:lang(th), :lang(zh-Hans)) .h2--s, :is(:lang(th), :lang(zh-Hans)) .h2--xs { line-height: 1.25; }
+:is(:lang(th), :lang(zh-Hans)) .h3 { line-height: 1.45; }
 .lead { font-size: var(--t-lead); line-height: 1.55; color: var(--muted); }
 .body { font-size: var(--t-body); line-height: var(--lh-body); color: var(--muted); }
 .body--l { font-size: 1.0625rem; }
@@ -247,7 +275,7 @@ strong, b { font-weight: 600; }
 .ink { color: var(--ink); }
 .muted { color: var(--muted); }
 .strong { font-weight: 600; }
-:lang(th) .lead { line-height: 1.7; }
+:is(:lang(th), :lang(zh-Hans)) .lead { line-height: 1.7; }
 
 /* Section heading: eyebrow + h2 (+ optional link on the right). */
 .sec-head { display: flex; flex-direction: column; gap: 1.25rem; }
@@ -516,10 +544,10 @@ body:has(.stickybar) { padding-bottom: 5.5rem; }
 .statement { display: flex; flex-direction: column; gap: 2rem; }
 @media (min-width: 64rem) { .statement { flex-direction: row; justify-content: space-between; align-items: flex-end; gap: 3rem; } }
 .statement__text { font-family: var(--font-head); font-weight: 600; font-size: clamp(2.375rem, 1.3rem + 4.5vw, 4.5rem); line-height: 1.03; letter-spacing: var(--track-h1); max-width: 62rem; color: var(--ink-deep); }
-:lang(th) .statement__text { line-height: 1.25; }
+:is(:lang(th), :lang(zh-Hans)) .statement__text { line-height: 1.25; }
 .statement__tag { display: none; font-size: .8125rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-deep); white-space: nowrap; }
 @media (min-width: 64rem) { .statement__tag { display: block; } }
-:lang(th) .statement__tag { letter-spacing: .06em; text-transform: none; }
+:is(:lang(th), :lang(zh-Hans)) .statement__tag { letter-spacing: .06em; text-transform: none; }
 
 /* ---------- Cards -------------------------------------------------- */
 .card {
@@ -546,7 +574,7 @@ body:has(.stickybar) { padding-bottom: 5.5rem; }
 .price__label { font-size: .6875rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
 .price--ink .price__label { color: var(--teal-soft); }
 .price--pale .price__label { color: var(--teal-text); }
-:lang(th) .price__label { letter-spacing: .06em; text-transform: none; font-size: .8125rem; }
+:is(:lang(th), :lang(zh-Hans)) .price__label { letter-spacing: .06em; text-transform: none; font-size: .8125rem; }
 .price__fig { display: flex; align-items: baseline; gap: .625rem; }
 .price__num { font-size: var(--t-huge); font-weight: 600; line-height: .9; }
 .price__cur { font-size: 1rem; }
@@ -586,7 +614,7 @@ body:has(.stickybar) { padding-bottom: 5.5rem; }
 .rows--3 .row--head { display: none; border-top: 0; }
 .rows--3 .row--head .row__ex { font-size: inherit; color: inherit; }
 @media (min-width: 48rem) { .rows--3 .row--head { display: grid; font-size: .8125rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding-top: 0; } }
-:lang(th) .rows--3 .row--head { letter-spacing: .04em; text-transform: none; }
+:is(:lang(th), :lang(zh-Hans)) .rows--3 .row--head { letter-spacing: .04em; text-transform: none; }
 .row--head .row__v { font-weight: inherit; }
 .rows--list .row { display: flex; flex-direction: column; gap: .375rem; padding: 1.375rem 0; }
 .rows--list .row__h { font-weight: 600; font-size: 1.0625rem; }
@@ -667,11 +695,11 @@ body:has(.stickybar) { padding-bottom: 5.5rem; }
 .screen__langs > * { padding: .25rem .5rem; border-radius: 6px; border: 1px solid var(--line); font-weight: 600; }
 .screen__langs b { background: var(--ink); border-color: var(--ink); color: var(--paper); }
 .screen__label { font-size: .6875rem; font-weight: 600; letter-spacing: .14em; color: var(--teal-text); text-transform: uppercase; }
-:lang(th) .screen__label { letter-spacing: .04em; text-transform: none; }
+:is(:lang(th), :lang(zh-Hans)) .screen__label { letter-spacing: .04em; text-transform: none; }
 .screen--dark .screen__label { color: var(--teal-soft); }
 .screen__title { font-family: var(--font-head); font-weight: 600; font-size: 1.625rem; line-height: 1.05; letter-spacing: -.03em; }
 @media (min-width: 64rem) { .screen__title { font-size: 1.75rem; } }
-:lang(th) .screen__title { letter-spacing: 0; line-height: 1.25; }
+:is(:lang(th), :lang(zh-Hans)) .screen__title { letter-spacing: 0; line-height: 1.25; }
 .screen__opt { padding: 1rem; border-radius: var(--r-m); border: 1px solid var(--line); display: flex; flex-direction: column; gap: .375rem; }
 .screen__opt--on { border: 1.5px solid var(--teal); background: var(--teal-tint); }
 .screen__opt--row { flex-direction: row; align-items: center; gap: .75rem; }
@@ -830,9 +858,9 @@ body:has(.stickybar) { padding-bottom: 5.5rem; }
 .legal-sec { display: flex; flex-direction: column; gap: .875rem; padding: 2.5rem 0; border-top: 1px solid var(--line); scroll-margin-top: 6.5rem; }
 .legal-sec:last-child { border-bottom: 1px solid var(--line); }
 .legal-sec h2 { font-size: clamp(1.5rem, 1.3rem + 1vw, 1.875rem); letter-spacing: -.025em; line-height: 1.15; }
-:lang(th) .legal-sec h2 { letter-spacing: 0; line-height: 1.35; }
+:is(:lang(th), :lang(zh-Hans)) .legal-sec h2 { letter-spacing: 0; line-height: 1.35; }
 .legal-sec p, .legal-sec li { font-size: 1.125rem; line-height: 1.65; color: #2C4245; max-width: 42.5rem; }
-:lang(th) .legal-sec p, :lang(th) .legal-sec li { line-height: 1.8; }
+:is(:lang(th), :lang(zh-Hans)) .legal-sec p, :is(:lang(th), :lang(zh-Hans)) .legal-sec li { line-height: 1.8; }
 .legal-sec ul { padding-left: 1.25rem; list-style: disc; display: flex; flex-direction: column; gap: .5rem; }
 .legal-sec h3 { font-size: 1.125rem; margin-top: .5rem; }
 
@@ -849,14 +877,14 @@ body:has(.stickybar) { padding-bottom: 5.5rem; }
 .doc__mark { font-family: 'Inter Tight', 'Inter', sans-serif; font-weight: 700; font-size: 1.375rem; letter-spacing: -.03em; }
 .doc__label { font-size: .625rem; font-weight: 600; letter-spacing: .16em; color: var(--teal-text); text-transform: uppercase; }
 .doc__title { margin-top: 1rem; font-family: var(--font-head); font-weight: 600; font-size: 1.375rem; line-height: 1.1; letter-spacing: -.03em; }
-:lang(th) .doc__title { letter-spacing: 0; line-height: 1.3; }
+:is(:lang(th), :lang(zh-Hans)) .doc__title { letter-spacing: 0; line-height: 1.3; }
 .doc__lines { margin-top: auto; display: flex; flex-direction: column; gap: .375rem; }
 .doc__lines span { height: 4px; background: var(--line-soft); display: block; }
 .doc__foot { font-size: .625rem; color: var(--muted); }
 
 /* ---------- Venue hero: the one-line case under the headline ------------ */
 .punch { font-family: var(--font-head); font-weight: 600; font-size: clamp(1.375rem, 1rem + 1.6vw, 2rem); line-height: 1.15; letter-spacing: -.02em; color: var(--teal-soft); }
-:lang(th) .punch { letter-spacing: 0; line-height: 1.35; }
+:is(:lang(th), :lang(zh-Hans)) .punch { letter-spacing: 0; line-height: 1.35; }
 
 /* ---------- Footer: official LINE QR (desktop; on a phone you tap the button) */
 .foot__qr { display: flex; align-items: center; gap: 1rem; margin-top: .5rem; font-size: .8125rem; line-height: 1.5; color: var(--muted-deep); max-width: 17rem; }
@@ -870,13 +898,14 @@ body:has(.stickybar) { padding-bottom: 5.5rem; }
 .langs3__word { font-size: clamp(2rem, 1rem + 4.5vw, 4rem); font-weight: 600; line-height: 1.1; }
 .langs3__word--en { font-family: var(--font-head); letter-spacing: -.04em; }
 .langs3__word--th { font-family: var(--font-thai); }
-.langs3__word--zh { font-family: 'SC Sample', 'PingFang SC', 'Noto Sans SC', sans-serif; font-weight: 500; }
+.langs3__word--zh { font-family: 'SC Sample', 'PingFang SC', 'Microsoft YaHei', sans-serif; font-weight: 500; }
+:lang(zh-Hans) .langs3__word--zh { font-family: var(--font-head); font-weight: 700; }
 
 /* ---------- 404 ---------------------------------------------------------- */
 .nf { min-height: calc(100vh - 4rem); display: flex; flex-direction: column; gap: 1.5rem; padding-block: 3rem; }
 @media (min-width: 64rem) { .nf { min-height: calc(100vh - 5.5rem); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); align-items: center; padding-block: 0; } .nf > .c1-6 { grid-column: span 6; } .nf > .c8-12 { grid-column: 8 / span 5; } }
 .nf__h1 { font-size: clamp(2.625rem, 1.3rem + 5vw, 5.5rem); line-height: .96; letter-spacing: -.05em; }
-:lang(th) .nf__h1 { letter-spacing: 0; line-height: 1.2; }
+:is(:lang(th), :lang(zh-Hans)) .nf__h1 { letter-spacing: 0; line-height: 1.2; }
 .nf__fig { display: flex; justify-content: center; }
 .nf__fig svg { width: min(100%, 26rem); }
 
@@ -890,7 +919,7 @@ body:has(.stickybar) { padding-bottom: 5.5rem; }
 @media (min-width: 64rem) { .foot__mark { font-size: 2rem; } }
 .foot__tag { font-size: .9375rem; color: var(--muted-dark); max-width: 18.75rem; }
 .foot__h { font-size: .75rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); }
-:lang(th) .foot__h { letter-spacing: .04em; text-transform: none; }
+:is(:lang(th), :lang(zh-Hans)) .foot__h { letter-spacing: .04em; text-transform: none; }
 .foot__name { color: var(--paper); font-size: 1rem; }
 .foot__mutedtext { color: var(--muted-dark); }
 .foot a:not(.btn) { color: var(--paper); text-decoration: none; }
@@ -926,9 +955,119 @@ body:has(.stickybar) { padding-bottom: 5.5rem; }
   .door { transform: none !important; }
 }
 
+/* ---------- Intro (home page) ------------------------------------------
+   The locker bank; door 12 opens; the camera goes into the lit interior, which
+   is the page's own white, so the inside of the locker becomes the site.
+   - CSS only: the site runs no script.
+   - Invisible by default. Only the running animation shows it, so where
+     animations do not run (reduced motion above, print, an old browser) the
+     visitor simply gets the page; it can never be left covering it.
+   - Only transform and opacity move. The bank zooms 5x; the rest of the push-in
+     is .intro__light, a flat white box that costs the GPU no texture.
+   Timeline (2.3s): 0 bank rises · .45 door 12 lights · .6–1.3 door swings ·
+   1.2–2.0 push in · 1.95–2.3 hand over to the page.                        */
+.intro {
+  --d: clamp(2.625rem, 10.5vmin, 6.5rem);        /* door width */
+  --h: calc(var(--d) * 1.27);                     /* door height, 44:56 as drawn */
+  --g: .25rem;                                    /* seam between doors */
+  --pl: .625rem;                                  /* plinth */
+  /* Door 12's centre, measured from the centre of the bank. */
+  --ox: calc(-1.5 * var(--d) - 1.5 * var(--g));
+  --oy: calc(.5 * var(--h) + .5 * var(--g) - var(--pl) / 2);
+  position: fixed; inset: 0; z-index: 1000; overflow: hidden; pointer-events: none;
+  background:
+    radial-gradient(60rem 40rem at 20% 10%, rgba(0, 178, 169, .16), transparent 60%),
+    radial-gradient(50rem 36rem at 85% 95%, rgba(14, 30, 33, .9), transparent 65%),
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, .055) 1px, transparent 1.5px) 0 0 / 16px 16px,
+    var(--ink);
+  opacity: 0;
+  animation: intro-life 2.3s linear both;
+}
+.intro__cam {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  transform-origin: calc(50% + var(--ox)) calc(50% + var(--oy));
+  will-change: transform;
+  animation: intro-push .8s cubic-bezier(.7, 0, .9, .45) 1.2s both;
+}
+.intro__bank {
+  position: relative; padding: .4375rem; border-radius: .625rem .625rem .25rem .25rem;
+  background: var(--ink-deep);
+  box-shadow: 0 0 0 1px var(--line-dark), 0 2.5rem 5rem -1.5rem rgba(0, 0, 0, .7), 0 0 6rem rgba(0, 178, 169, .08);
+  animation: intro-rise .7s var(--ease) both;
+}
+.intro__grid { display: grid; grid-template-columns: repeat(6, var(--d)); grid-auto-rows: var(--h); gap: var(--g); }
+.intro__slot { position: relative; border-radius: 3px; background: #21403F; box-shadow: inset 0 0 0 1px #35595A, inset 0 1px 0 rgba(255, 255, 255, .05); }
+/* Handle, right-hand side, as on the drawing. */
+.intro__slot::after, .intro__face::after {
+  content: ""; position: absolute; right: 14%; top: 50%; width: 2px; height: 18%; margin-top: -9%;
+  border-radius: 1px; background: #5C8583;
+}
+.intro__slot i, .intro__face i {
+  position: absolute; left: 12%; top: 9%; font: 600 calc(var(--d) * .13)/1 var(--font-head);
+  font-style: normal; letter-spacing: .04em; color: #8FADAB; font-variant-numeric: tabular-nums;
+}
+/* The terminal: screen, then card reader. */
+.intro__term { grid-column: 6; grid-row: 1 / span 4; border-radius: 3px; background: #1A3335; box-shadow: inset 0 0 0 1px #35595A; display: flex; flex-direction: column; align-items: center; gap: 8%; padding-top: 22%; }
+.intro__term span:first-child { width: 62%; aspect-ratio: 3 / 4; border-radius: 2px; background: var(--teal-soft); opacity: .85; }
+.intro__term span:last-child { width: 40%; height: 3px; border-radius: 2px; background: var(--teal); }
+.intro__plinth { height: var(--pl); margin: .4375rem -.4375rem -.4375rem; border-top: 2px solid var(--teal); border-radius: 0 0 .25rem .25rem; background: #12262A; }
+
+/* Door 12. */
+.intro__slot--open { z-index: 2; background: none; box-shadow: none; }
+.intro__slot--open::after { content: none; }
+/* Inside: walls in the tint the site's own drawing uses for an open locker,
+   running back (the four diagonals) to a lit back wall. */
+.intro__cavity {
+  position: absolute; inset: 0; border-radius: 3px; overflow: hidden;
+  background:
+    linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(20, 40, 44, .16) 50%, transparent calc(50% + .5px)),
+    linear-gradient(to top right, transparent calc(50% - .5px), rgba(20, 40, 44, .16) 50%, transparent calc(50% + .5px)),
+    linear-gradient(180deg, #BFE6E2, var(--teal-tint-2) 45%, #E4F5F3);
+}
+/* Depth inside; it flattens (opacity only) as the back wall comes forward. */
+.intro__cavity::after { content: ""; position: absolute; inset: 0; border-radius: 3px; box-shadow: inset .5rem .375rem .875rem rgba(20, 40, 44, .28), inset 0 0 0 1px rgba(20, 40, 44, .2); animation: intro-out .3s linear 1.3s forwards; }
+/* Light spilling out onto the bank. It arrives with the door, not before it. */
+.intro__slot--open::before { content: ""; position: absolute; inset: 0; border-radius: 3px; box-shadow: 0 0 3rem rgba(127, 220, 214, .5); opacity: 0; animation: intro-select .5s linear .7s both; }
+/* Going in, in two beats. First the lit back wall comes forward, clipped by the
+   opening, until the opening is all light… */
+.intro__light { position: absolute; inset: 20% 19%; border-radius: 2px; background: var(--paper); box-shadow: 0 0 .75rem .25rem rgba(255, 255, 255, .7); animation: intro-light .45s cubic-bezier(.6, 0, .85, .5) 1.2s both; }
+/* …then the camera crosses the threshold: the opening itself takes the screen.
+   A flat white box, so the last 14x of the push-in costs the GPU no texture. */
+.intro__flood { position: absolute; inset: 0; border-radius: 3px; background: var(--paper); opacity: 0; animation: intro-flood .42s cubic-bezier(.7, 0, .9, .45) 1.5s both; }
+.intro__hinge { position: absolute; inset: 0; perspective: calc(var(--d) * 4.5); perspective-origin: 50% 50%; }
+.intro__door { position: absolute; inset: 0; transform-style: preserve-3d; transform-origin: 0 50%; animation: intro-swing .7s cubic-bezier(.45, 0, .15, 1) .6s both; }
+.intro__face, .intro__back { position: absolute; inset: 0; border-radius: 3px; backface-visibility: hidden; }
+.intro__face { background: #21403F; box-shadow: inset 0 0 0 1px #35595A, inset 0 1px 0 rgba(255, 255, 255, .05); }
+/* Selected: the door turns teal just before it moves. */
+.intro__face::before { content: ""; position: absolute; inset: 0; border-radius: 3px; background: var(--teal); opacity: 0; animation: intro-select .25s var(--ease) .4s both; }
+.intro__face::after { background: var(--ink-deep); z-index: 1; }
+.intro__face i { color: var(--ink-deep); z-index: 1; opacity: 0; animation: intro-select .25s var(--ease) .4s both; }
+/* Shade deepens as the face turns away from the light. */
+.intro__face b { position: absolute; inset: 0; border-radius: 3px; background: linear-gradient(90deg, rgba(14, 30, 33, .55), rgba(14, 30, 33, .15)); opacity: 0; animation: intro-select .7s linear .6s both; }
+.intro__back { transform: rotateY(180deg); background: var(--teal-text); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .25); }
+
+.intro__mark {
+  position: absolute; left: 0; right: 0; top: 100%; margin-top: 2.25rem; text-align: center;
+  font: 700 clamp(1.5rem, 1.2rem + 1vw, 2rem)/1 'Inter Tight', 'Inter', sans-serif; letter-spacing: -.03em; color: var(--paper);
+  animation: intro-rise .7s var(--ease) .1s both, intro-out .3s linear 1.15s forwards;
+}
+/* The one honest "loading" cue: a hairline that fills while the door opens. */
+.intro__mark span { display: block; width: 4.5rem; height: 2px; margin: 1rem auto 0; border-radius: 1px; background: var(--teal); transform-origin: 0 50%; animation: intro-fill 1.05s cubic-bezier(.4, 0, .2, 1) .2s both; }
+
+@keyframes intro-life { 0%, 85% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes intro-rise { from { opacity: 0; transform: translateY(.875rem); } to { opacity: 1; transform: none; } }
+@keyframes intro-select { to { opacity: 1; } }
+@keyframes intro-swing { to { transform: rotateY(-108deg); } }
+@keyframes intro-out { to { opacity: 0; } }
+@keyframes intro-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+/* Bring door 12 to the middle of the screen while closing in on it. */
+@keyframes intro-push { to { transform: translate(calc(-1 * var(--ox)), calc(-1 * var(--oy))) scale(5); } }
+@keyframes intro-light { to { transform: scale(1.9); } }
+@keyframes intro-flood { 0% { opacity: 0; transform: none; } 10% { opacity: 1; } 100% { opacity: 1; transform: scale(16); } }
+
 /* ---------- Print ------------------------------------------------------- */
 @media print {
-  .hdr, .stickybar, .skip, .btn-row { display: none !important; }
+  .hdr, .stickybar, .skip, .btn-row, .intro { display: none !important; }
   body { font-size: 10.5pt; }
   .section { padding-block: 14pt; }
   .section--teal, .section--ink, .section--ink-deep, .section--warm, .section--pale { background: none !important; color: var(--ink) !important; }

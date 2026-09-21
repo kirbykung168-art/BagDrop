@@ -126,8 +126,19 @@ Venue Partners update.
 
 Seven subset faces in `static/fonts/`. If copy introduces a character outside
 Latin-1 / the Thai block, `npm run check` will say "subset missing N glyph(s)";
-then run `npm run fonts` (Python 3 and network needed the first time). The
-Chinese sample face contains only 你好 and 中文.
+then run `npm run fonts` (Python 3 and network needed the first time).
+
+Chinese is different: the full font is ~10 MB, so `sc-400` and `sc-700` hold
+**only the characters the Chinese pages use**. After any edit to `zh.mjs` run
+`node build.mjs && npm run glyphs && npm run fonts`, or a new character will
+fall back to the system font (`npm run check` reports it). English and Thai
+pages may only ever load `sc-sample-500` (你好 and 中文, 1.3 KB): no CSS rule
+outside `:lang(zh-Hans)` names 'Noto Sans SC'. Keep it that way — that rule is
+what stops every English visitor downloading 130 KB of Chinese font.
+
+Chinese and Thai have no spaces, so browsers break lines mid-word. Words that
+must stay whole are listed in `src/content/zh-nobreak.mjs` and
+`src/content/thai-nobreak.mjs`.
 
 ## 8. Design tokens
 

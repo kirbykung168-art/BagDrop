@@ -87,6 +87,25 @@ export function accordion(items) {
     .join('')}</div>`;
 }
 
+/* --------------------------------------------------------------- Intro */
+/**
+ * The opening sequence on the home page: the locker bank, door 12 swings open,
+ * and the camera goes into the lit interior, which is the page's own white.
+ * CSS only (site.css → .intro) — the site runs no script. Decorative, so it is
+ * hidden from assistive technology, and invisible unless its animation runs.
+ * Twenty doors and a terminal, as on the unit; 12 is the locker the terminal
+ * mockups open, in the same place as the open door in lockerIllustration().
+ */
+export function intro() {
+  const OPEN = 12;
+  const slots = Array.from({ length: 20 }, (_, i) => {
+    const n = String(i + 1).padStart(2, '0');
+    if (i + 1 !== OPEN) return `<div class="intro__slot"><i>${n}</i></div>`;
+    return `<div class="intro__slot intro__slot--open"><div class="intro__cavity"><div class="intro__light"></div></div><div class="intro__hinge"><div class="intro__door"><div class="intro__face"><i>${n}</i><b></b></div><div class="intro__back"></div></div></div><div class="intro__flood"></div></div>`;
+  }).join('');
+  return `<div class="intro" aria-hidden="true"><div class="intro__cam"><div class="intro__bank"><div class="intro__grid">${slots}<div class="intro__term"><span></span><span></span></div></div><div class="intro__plinth"></div><div class="intro__mark">BagDrop<span></span></div></div></div></div>`;
+}
+
 /* ------------------------------------------------------- Illustrations */
 /**
  * A handoff illustration from src/content/images.mjs.

@@ -17,6 +17,9 @@
  *   03             — a phone scanning the terminal: not how the service works.
  *   20             — the first hero; replaced by 11.
  *   18             — unit drawing with unlabelled callout lines.
+ *   10             — a man collecting; replaced in step 4 by 21, which shows the
+ *                    step as written: the PIN typed on the touchscreen, the same
+ *                    traveller as steps 1–3, her suitcase waiting in the locker.
  */
 export const IMAGES = {
   /* Home hero — the product moment: a bag going into a locker, no phone in sight.
@@ -34,7 +37,7 @@ export const IMAGES = {
   stepStart:   { src: '08_sequence_visual_C.png',      crop: [150, 0, 1365, 1024],  widths: [480, 960] },
   stepPay:     { src: '07_sequence_visual_B.png',      crop: [0, 180, 1254, 940],   widths: [480, 960] },
   stepStore:   { src: '09_store_visual.png',           crop: [100, 0, 1365, 1024],  widths: [480, 960] },
-  stepCollect: { src: '10_collect_visual_man.png',     crop: [120, 0, 1365, 1024],  widths: [480, 960] },
+  stepCollect: { src: '21_reopen_pin_woman.png',       crop: [0, 0, 1448, 1086],    widths: [480, 960] },
 
   /* Footer — the official LINE QR. Near-lossless: it has to stay scannable. */
   lineQr:      { src: 'brand_assets/line-qr.jpeg', crop: [0, 0, 540, 540], widths: [240, 480], quality: 0.98 },

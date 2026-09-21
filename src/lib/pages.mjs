@@ -9,6 +9,8 @@ import {
 } from './components.mjs';
 
 const ph = placeholders;
+/** The currency word beside a bare numeral. */
+const CURRENCY = { en: 'THB', th: 'บาท', zh: '泰铢' };
 const wrap = (inner, cls = '') => `<div class="wrap${cls ? ' ' + cls : ''}">${inner}</div>`;
 const section = (cls, inner, wrapCls = '') => `<section class="section ${cls}">${wrap(inner, wrapCls)}</section>`;
 
@@ -54,8 +56,8 @@ export function home(lang) {
 <div class="stack stack--xl">
 ${head({ eyebrow: pr.eyebrow, h2: pr.h2, link: link(c.ui.fullPricing, hrefFor(lang, 'pricing')) })}
 <div class="grid grid--3">
-  <div class="price price--ink"><div class="price__side"><span class="price__label">${esc(pr.perHour)}</span><span class="price__fig"><span class="num price__num">${thb(price.hourly)}</span><span class="price__cur hide-m">${lang === 'th' ? 'บาท' : 'THB'}</span></span><span class="price__note">${esc(pr.perHourNote)}</span></div><span class="price__cur hide-d">${lang === 'th' ? 'บาท' : 'THB'}</span></div>
-  <div class="price price--pale"><div class="price__side"><span class="price__label">${esc(pr.dailyMax)}</span><span class="price__fig"><span class="num price__num">${thb(price.dailyCap)}</span><span class="price__cur hide-m">${lang === 'th' ? 'บาท' : 'THB'}</span></span><span class="price__note">${esc(pr.dailyMaxNote)}</span></div><span class="price__cur hide-d">${lang === 'th' ? 'บาท' : 'THB'}</span></div>
+  <div class="price price--ink"><div class="price__side"><span class="price__label">${esc(pr.perHour)}</span><span class="price__fig"><span class="num price__num">${thb(price.hourly)}</span><span class="price__cur hide-m">${CURRENCY[lang] || CURRENCY.en}</span></span><span class="price__note">${esc(pr.perHourNote)}</span></div><span class="price__cur hide-d">${CURRENCY[lang] || CURRENCY.en}</span></div>
+  <div class="price price--pale"><div class="price__side"><span class="price__label">${esc(pr.dailyMax)}</span><span class="price__fig"><span class="num price__num">${thb(price.dailyCap)}</span><span class="price__cur hide-m">${CURRENCY[lang] || CURRENCY.en}</span></span><span class="price__note">${esc(pr.dailyMaxNote)}</span></div><span class="price__cur hide-d">${CURRENCY[lang] || CURRENCY.en}</span></div>
   <div class="card card--l hide-m examples">${eyebrow(pr.examples)}<div class="rows rows--ex">${exRows}</div><div style="margin-top:auto">${paymentMarks(ph.paymentMarks)}</div></div>
   <div class="hide-d">${paymentMarks(ph.paymentMarks)}</div>
 </div>
@@ -213,7 +215,7 @@ ${head({ eyebrow: p.wrongEyebrow, h2: p.wrongH2 })}
 export function pricing(lang) {
   const c = COPY[lang], p = c.pricing, t = tFor(lang), m = (n) => money(lang, n);
   const price = product.price;
-  const cur = lang === 'th' ? 'บาท' : 'THB';
+  const cur = CURRENCY[lang] || CURRENCY.en;
 
   const hero = section('section--s', `
 <div class="stack stack--xl">

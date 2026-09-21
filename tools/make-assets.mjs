@@ -37,12 +37,18 @@ const fonts = [
   face('Inter Tight', 700, await b64('intertight-700.woff2')),
   face('IBM Plex Sans Thai', 400, await b64('thai-400.woff2')),
   face('IBM Plex Sans Thai', 600, await b64('thai-600.woff2')),
+  face('Noto Sans SC', 400, await b64('sc-400.woff2')),
+  face('Noto Sans SC', 700, await b64('sc-700.woff2')),
 ].join('');
 
 function card(lang) {
   const c = COPY[lang];
   const t = tFor(lang);
   const th = lang === 'th';
+  // Thai and Chinese are never tracked tight and need looser leading than Latin.
+  const loose = lang !== 'en';
+  const body = { th: "'IBM Plex Sans Thai','Inter'", zh: "'Inter','Noto Sans SC'" }[lang] || "'Inter'";
+  const head = { th: "'IBM Plex Sans Thai'", zh: "'Inter Tight','Noto Sans SC'" }[lang] || "'Inter Tight'";
   const price = `${money(lang, product.price.hourly)} ${c.ui.perHour} · ${money(lang, product.price.dailyCap)} ${c.ui.maxPerDay}`;
   const svg = lockerIllustration({ labels: c.diagrams.locker, callouts: false, id: 'og' })
     // The card is teal, so the drawing's dotted paper and dashed floor go ink-on-teal.
@@ -51,11 +57,11 @@ function card(lang) {
 ${fonts}
 *{margin:0;padding:0;box-sizing:border-box}
 body{width:1200px;height:630px;background:#00B2A9;color:#0E1E21;overflow:hidden;position:relative;
-  font-family:${th ? "'IBM Plex Sans Thai','Inter'" : "'Inter'"},sans-serif;-webkit-font-smoothing:antialiased}
+  font-family:${body},sans-serif;-webkit-font-smoothing:antialiased}
 .text{position:absolute;left:72px;top:64px;width:600px;display:flex;flex-direction:column;gap:28px}
 .mark{font-family:'Inter Tight','Inter',sans-serif;font-weight:700;font-size:40px;letter-spacing:-.03em}
 .eyebrow{font-size:16px;font-weight:600;letter-spacing:${th ? '.06em' : '.16em'};text-transform:${th ? 'none' : 'uppercase'}}
-h1{font-family:${th ? "'IBM Plex Sans Thai'" : "'Inter Tight'"},'Inter',sans-serif;font-weight:600;font-size:${th ? 60 : 66}px;line-height:${th ? 1.2 : 1};letter-spacing:${th ? 0 : '-.045em'};max-width:560px}
+h1{font-family:${head},'Inter',sans-serif;font-weight:${lang === 'zh' ? 700 : 600};font-size:${loose ? 60 : 66}px;line-height:${loose ? 1.2 : 1};letter-spacing:${loose ? 0 : '-.045em'};max-width:560px}
 .price{font-family:'Inter Tight','Inter',sans-serif;font-weight:600;font-size:26px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .foot{position:absolute;left:72px;bottom:56px;font-size:18px;display:flex;gap:18px;align-items:baseline}
 .reg{font-variant-numeric:tabular-nums;letter-spacing:.04em;font-weight:600}

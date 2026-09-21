@@ -53,8 +53,8 @@ head('§6  Legal footer on every page');
     const lang = p.split('/')[1];
     const text = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
     for (const r of required) {
-      if (r.startsWith('©') && lang === 'th') continue; // Thai footer carries the Thai wording
-      if (r === 'VAT registration' && lang === 'th') continue;
+      if (r.startsWith('©') && lang !== 'en') continue; // Thai and Chinese footers carry their own wording
+      if (r === 'VAT registration' && lang !== 'en') continue;
       if (r === company.address.en && lang === 'th') { if (!html.includes(company.address.th)) bads.push(`${p} missing Thai address`); continue; }
       if (!text.includes(r) && !html.includes(r)) bads.push(`${p} missing "${r.slice(0, 40)}"`);
     }
@@ -128,12 +128,15 @@ head('§4  Price published in numerals');
   bads.length ? bads.forEach(bad) : ok('50 / 300 and every worked example appear in both languages');
 }
 
-/* ---- 5. Languages: EN + TH only, hreflang reciprocity, no 中文 toggle --- */
-head('§5  Languages, hreflang, x-default, no Chinese toggle');
+/* ---- 5. Languages: each page only in the languages it declares ---------- */
+head('§5  Languages, hreflang, x-default, language toggle');
 {
   let bads = [];
-  if (existsSync(join(DIST, 'zh'))) bads.push('a /zh/ directory was built');
+  const zhPages = PAGES.filter((p) => p.langs.includes('zh')).map((p) => p.key);
+  // Chinese is for the traveller-facing pages; B2B and legal text stay EN/TH.
+  for (const k of ['venues', 'company', 'legal']) if (zhPages.includes(k)) bads.push(`${k} must not be built in Chinese`);
   for (const page of PAGES) {
+    for (const l of site.langs) if (!page.langs.includes(l) && existsSync(join(DIST, l, page.slug, 'index.html')) && page.slug) bads.push(`/${l}/${page.slug}/ was built but is not declared`);
     for (const lang of page.langs) {
       const path = urlFor(lang, page.slug);
       const html = docs.get(path + 'index.html');
@@ -143,17 +146,21 @@ head('§5  Languages, hreflang, x-default, no Chinese toggle');
         const need = `hreflang="${COPY[other].htmlLang}" href="${site.origin}${urlFor(other, page.slug)}"`;
         if (!html.includes(need)) bads.push(`${path} missing hreflang -> ${other}`);
       }
-      if (html.includes('hreflang="zh')) bads.push(`${path} claims a Chinese alternate`);
+      // hreflang may only claim a language this page really exists in.
+      const headAlts = [...html.matchAll(/<link rel="alternate" hreflang="([^"]+)"/g)].map((m) => m[1]).filter((h) => h !== 'x-default');
+      for (const h of headAlts) if (!page.langs.some((l) => COPY[l].htmlLang === h)) bads.push(`${path} claims an alternate it does not have: ${h}`);
       if (!html.includes(`hreflang="x-default" href="${site.origin}${urlFor(site.defaultLang, page.slug)}"`)) bads.push(`${path} missing/incorrect x-default`);
       if (!html.includes(`<link rel="canonical" href="${site.origin}${path}">`)) bads.push(`${path} bad canonical`);
-      // The toggle must land on the equivalent page in the other language.
-      const other = page.langs.find((l) => l !== lang);
+      // The toggle offers every other language: the same page where it exists,
+      // that language's homepage where it does not.
       const toggle = (html.match(/<nav class="lang"[\s\S]*?<\/nav>/) || [''])[0];
-      if (!toggle.includes(`href="${urlFor(other, page.slug)}"`)) bads.push(`${path} toggle does not go to ${urlFor(other, page.slug)}`);
-      if (toggle.includes('中文')) bads.push(`${path} still offers 中文 in the toggle`);
+      for (const other of site.langs.filter((l) => l !== lang)) {
+        const want = page.langs.includes(other) ? urlFor(other, page.slug) : urlFor(other, '');
+        if (!toggle.includes(`href="${want}"`)) bads.push(`${path} toggle does not go to ${want}`);
+      }
     }
   }
-  bads.length ? bads.slice(0, 12).forEach(bad) : ok('EN/TH only; hreflang reciprocal; x-default -> en; toggle lands on the equivalent page');
+  bads.length ? bads.slice(0, 12).forEach(bad) : ok(`EN/TH everywhere, Chinese on ${zhPages.join(', ')}; hreflang reciprocal and truthful; x-default -> en; toggle lands on the equivalent page`);
 }
 
 /* ---- 6. Internal links resolve ------------------------------------------ */
@@ -195,11 +202,15 @@ print(json.dumps(out))
       head: join(ROOT, 'static/fonts/intertight-600.woff2'),
       thai: join(ROOT, 'static/fonts/thai-400.woff2'),
       cjk: join(ROOT, 'static/fonts/sc-sample-500.woff2'),
+      cjkFull: join(ROOT, 'static/fonts/sc-400.woff2'),
+      cjkBold: join(ROOT, 'static/fonts/sc-700.woff2'),
     };
     const res = JSON.parse(execFileSync(py, ['-c', script, JSON.stringify(map)], { encoding: 'utf8' }));
     const sets = Object.fromEntries(Object.entries(res).map(([k, v]) => [k, new Set(v)]));
-    const missing = { latin: new Set(), head: new Set(), thai: new Set(), cjk: new Set() };
-    for (const [, html] of docs) {
+    const missing = { latin: new Set(), head: new Set(), thai: new Set(), cjk: new Set(), cjkFull: new Set(), cjkBold: new Set() };
+    for (const [path, html] of docs) {
+      // A Chinese page draws on the full face; any other page may only use the 4-glyph sample.
+      const zhPage = path.startsWith('/zh/');
       const text = html.replace(/<style[\s\S]*?<\/style>/g, ' ').replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<[^>]+>/g, ' ');
       for (const ch of text) {
         const cp = ch.codePointAt(0);
@@ -207,6 +218,7 @@ print(json.dumps(out))
         const bucket = (cp >= 0x0e00 && cp <= 0x0e7f && cp !== 0x0e3f) ? 'thai'
           : ((cp >= 0x2e80 && cp <= 0x303f) || (cp >= 0x3400 && cp <= 0x4dbf) || (cp >= 0x4e00 && cp <= 0x9fff) || (cp >= 0xff00 && cp <= 0xffef)) ? 'cjk'
           : 'latin';
+        if (bucket === 'cjk' && zhPage) { for (const f of ['cjkFull', 'cjkBold']) if (!sets[f].has(cp)) missing[f].add(ch); continue; }
         if (!sets[bucket].has(cp)) missing[bucket].add(ch);
         if (bucket === 'latin' && !sets.head.has(cp)) missing.head.add(ch);
       }
@@ -215,7 +227,7 @@ print(json.dumps(out))
     for (const [k, v] of Object.entries(missing)) {
       if (v.size) { any = true; bad(`${k} subset missing ${v.size} glyph(s): ${[...v].join(' ')}`); }
     }
-    if (!any) ok('Inter, Inter Tight, IBM Plex Sans Thai and the 4-glyph Chinese sample cover every character');
+    if (!any) ok('Inter, Inter Tight, IBM Plex Sans Thai, Noto Sans SC (Chinese pages) and the 4-glyph sample (all other pages) cover every character');
   } catch (e) {
     bad('could not verify font coverage: ' + e.message.split('\n')[0]);
   }
@@ -310,6 +322,7 @@ head('§8  Page weight (Home under ~700 KB incl. SVGs, images and fonts; diagram
     en: (await fsize('inter-400.woff2')) + (await fsize('inter-600.woff2')) + (await fsize('intertight-600.woff2')) + (await fsize('intertight-700.woff2')),
   };
   fontBytes.th = fontBytes.en + (await fsize('thai-400.woff2')) + (await fsize('thai-600.woff2'));
+  fontBytes.zh = fontBytes.en + (await fsize('sc-400.woff2')) + (await fsize('sc-700.woff2'));
   let worst = 0, worstName = '';
   for (const [p, html] of pages) {
     const lang = p.split('/')[1];

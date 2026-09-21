@@ -1,6 +1,6 @@
 # BagDrop website
 
-Static, bilingual (English / Thai) website for **BagDrop**, the trading name of
+Static, multilingual (English / Thai, plus Simplified Chinese for travellers) website for **BagDrop**, the trading name of
 **8Venture Co., Ltd.** (บริษัท 8เวนเจอร์ จำกัด), juristic person registration
 number **0105569178707**.
 
@@ -47,7 +47,7 @@ There is **no CMS, no framework and no client-side JavaScript**. `build.mjs` is 
 ```
 src/content/facts.mjs           ← SINGLE SOURCE OF TRUTH for every company/product fact
 src/content/placeholders.mjs    ← every unconfirmed value, marked PLACEHOLDER (see CONTENT_TODO.md)
-src/content/copy/{en,th}.mjs    ← all prose, one module per language (zh.mjs kept for later)
+src/content/copy/{en,th,zh}.mjs ← all prose, one module per language (zh: traveller pages only)
 src/content/thai-nobreak.mjs    ← Thai compounds the browser must not split across lines
 src/lib/render.mjs              ← <head>, header, footer, sticky bar, JSON-LD, {token} filling
 src/lib/components.mjs          ← buttons, icons, terminal-screen mockups and every SVG illustration
@@ -68,21 +68,25 @@ reviewer still sees whole sentences.
 
 ## Pages
 
-| URL | EN | TH |
-|---|---|---|
-| `/` | redirects to `/en/` | |
-| `…/` Home | ✅ | ✅ |
-| `…/how-it-works/` | ✅ | ✅ |
-| `…/pricing/` | ✅ | ✅ |
-| `…/venue-partners/` | ✅ | ✅ |
-| `…/company/` | ✅ | ✅ |
-| `…/legal/` | ✅ | ✅ |
-| `…/404.html` | ✅ | ✅ |
+| URL | EN | TH | 中文 |
+|---|---|---|---|
+| `/` | redirects to `/en/` | | |
+| `…/` Home | ✅ | ✅ | ✅ |
+| `…/how-it-works/` | ✅ | ✅ | ✅ |
+| `…/pricing/` | ✅ | ✅ | ✅ |
+| `…/venue-partners/` | ✅ | ✅ | → EN |
+| `…/company/` | ✅ | ✅ | → EN |
+| `…/legal/` | ✅ | ✅ | → EN |
+| `…/404.html` | ✅ | ✅ | ✅ |
 
 The language toggle keeps the reader on the equivalent page; every page carries
-reciprocal `hreflang` plus `x-default` (English). Chinese appears only as a
-language sample on How it works; `src/content/copy/zh.mjs` is kept for when
-those pages are completed.
+reciprocal `hreflang` plus `x-default` (English).
+
+**Simplified Chinese** covers the traveller-facing pages only: Home, How it
+works, Pricing and 404 (`/zh/…`). Venue partners, Company and Legal are B2B or
+legal text and stay EN/TH; from a Chinese page those links open the English
+version, and the toggle on those pages sends a Chinese reader to `/zh/`. Which
+page exists in which language is the `langs` list in `PAGES` (`render.mjs`).
 
 ## Design
 
