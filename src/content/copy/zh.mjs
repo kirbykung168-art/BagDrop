@@ -381,7 +381,7 @@ export default {
   /* ---------------------------------------------------------- 404 */
   notFound: {
     title: '页面未找到 — BagDrop',
-    description: 'bagdrop.co.th 上没有这个页面。请返回首页，或在 LINE 上给我们留言。',
+    description: 'bagdropth.com 上没有这个页面。请返回首页，或在 LINE 上给我们留言。',
     eyebrow: '错误 404',
     h1: '这个柜位是空的。',
     lead: '您要找的页面不在这里。请返回首页，或在 LINE 上给我们留言。',

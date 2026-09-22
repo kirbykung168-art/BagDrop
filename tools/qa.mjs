@@ -372,7 +372,7 @@ head('§7  Every placeholder is listed in CONTENT_TODO.md');
   missing.length ? missing.forEach((k) => bad(`placeholders.${k} not in CONTENT_TODO.md`)) : ok(`${marked.length} PLACEHOLDER entries, all tracked in CONTENT_TODO.md`);
   // OG images exist per language, and the placeholder PDF is served.
   for (const lang of site.langs) existsSync(join(DIST, 'og', `og-${lang}.png`)) ? pass++ : bad(`og/og-${lang}.png missing`);
-  existsSync(join(DIST, 'company-profile.pdf')) ? ok('og cards and placeholder company-profile.pdf present') : bad('company-profile.pdf missing');
+  existsSync(join(DIST, 'company-profile.pdf')) ? ok('og cards and company-profile.pdf present') : bad('company-profile.pdf missing');
 }
 
 console.log(`\n${'-'.repeat(58)}\n  ${pass} passed, ${fail} failed\n`);

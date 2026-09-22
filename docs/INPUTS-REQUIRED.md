@@ -13,7 +13,7 @@ Status: 🔴 blocks launch · 🟠 blocks a page · 🟢 supplied
 
 | # | Input | Blocks | Where it lives | Status |
 |---|---|---|---|---|
-| 1 | **Domain email address** (not Gmail) | Footer on every page; Company; Venue Partners | `src/content/facts.mjs` → `company.email` | 🔴 placeholder `hello@bagdrop.co.th` |
+| 1 | **Email address** | Footer on every page; Company; Venue Partners | `src/content/facts.mjs` → `company.email` | 🟢 `8venture.th@gmail.com`, as published in the company profile (22 Sep 2026). Swap in a domain address if one is set up |
 | 2 | **LINE Official Account ID** | Header + footer on every page (§8) | `src/content/facts.mjs` → `company.lineOaId`, `company.lineUrl` | 🟢 supplied 20 Sep 2026: `@130keaga`, taken from the official QR (`brand_assets/line-qr.jpeg` → lin.ee/sl6Wpin). Replace if a premium ID such as `@bagdrop` is bought later |
 | 3 | **Official LINE button asset** | Header, footer, sticky bar and contact bands | currently a LINE-green pill with a chat icon, `.btn--line` | 🟠 not supplied; current button follows the mockups |
 | 4 | **Legal review of Terms and PDPA policy** | `/legal/` in both languages | `src/content/copy/{en,th}.mjs` → `legal` | 🔴 drafted, unreviewed |
@@ -22,7 +22,7 @@ Status: 🔴 blocks launch · 🟠 blocks a page · 🟢 supplied
 | 7 | **Maximum storage period** before property is abandoned | Home rules; How it works; Legal §4 | `placeholders.storage` | 🔴 3 days + 30 days held, placeholder from the design |
 | 8 | **Native Thai copy reviewer** | Every Thai page (§5) | `docs/th-copy-sheet.md` | 🔴 521 strings awaiting review |
 | 9 | **Native Simplified Chinese reviewer** | `/zh/` Home, How it works, Pricing, 404 | `docs/zh-copy-sheet.md` | 🔴 live but machine-drafted: needs a native review, as the Thai does |
-| 10 | **Domain + registrar access in client's name** | Launch (§12) | — | 🔴 `bagdrop.co.th` preferred; a .co.th requires company documents, which is itself a credibility signal |
+| 10 | **Domain + registrar access in client's name** | Launch (§12) | `facts.mjs` → `site.origin` | 🟠 the company profile publishes `www.bagdropth.com`, so canonical/hreflang/sitemap now use it; confirm the domain is registered and pointed at the deployment |
 | 11 | **Repository / hosting in client's name** | Handover (§12) | — | 🟠 see README "Handover" |
 
 ## Blocking a specific page
@@ -30,7 +30,7 @@ Status: 🔴 blocks launch · 🟠 blocks a page · 🟢 supplied
 | # | Input | Blocks | Where it lives | Status |
 |---|---|---|---|---|
 | 12 | **Pricing rules** — per started hour; cap per calendar day; first hour at drop-off, extra time on collection | `/pricing/`, Home, How it works, Legal §1 | `placeholders.billing`, `placeholders.paymentTiming` | 🔴 built with the rules shown in the design; confirm before launch |
-| 13 | **Company profile PDF** | Home venue band; Venue Partners hero and Documents section | `static/company-profile.pdf`, `placeholders.profile` | 🔴 one-page stand-in labelled 2.4 MB |
+| 13 | **Company profile PDF** | Home venue band; Venue Partners hero and Documents section | `static/company-profile.pdf`, `placeholders.profile` | 🟢 the real 8-page profile (September 2026), supplied 22 Sep 2026 |
 | 14 | **Unit dimensions** and footprint | What-fits diagram, spec table, floor plan | `placeholders.interior`, `placeholders.footprint` | 🟠 60 × 45 × 85 cm / 32 kg and ≈ 3.4 × 1.8 m from the design |
 | 15 | **Founder portrait** | Company page, Director section | `placeholders.portrait` | 🟠 initials monogram until supplied |
 | 16 | **Thai rendering of the registered address** | Thai pages, footer | `facts.mjs` → `company.addressLines.th` | 🟠 **rendered from the English address, unverified** — must be checked against the registration document |

@@ -550,7 +550,7 @@ export default {
   /* ---------------------------------------------------------- 404 */
   notFound: {
     title: 'Page not found — BagDrop',
-    description: 'That page does not exist on bagdrop.co.th. Try the homepage, or message us on LINE.',
+    description: 'That page does not exist on bagdropth.com. Try the homepage, or message us on LINE.',
     eyebrow: 'ERROR 404',
     h1: 'This locker is empty.',
     lead: "The page you were looking for isn't here. Try the homepage, or message us on LINE.",

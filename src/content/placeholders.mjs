@@ -67,11 +67,11 @@ export const placeholders = {
     storedTotal: 200,
   },
 
-  // PLACEHOLDER — company profile PDF. /company-profile.pdf is a one-page
-  // stand-in; the label states the size the real document is expected to be.
+  // The company profile: the real 8-page document (September 2026), supplied by
+  // the founder on 22 September 2026. Update sizeLabel when it is replaced.
   profile: {
     href: '/company-profile.pdf',
-    sizeLabel: '2.4 MB',
+    sizeLabel: '55 KB',
     year: 2026,
   },
 

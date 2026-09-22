@@ -20,7 +20,6 @@ the copy string to edit is named too.
 | `prohibited` | Hazardous goods, perishables, cash and valuables, animals (short list); weapons and illegal items in Legal | Home rules tiles; FAQ; Legal §2 | The full list approved by the legal adviser (edit `legal.sections[prohibited]` in `copy/en.mjs` and `copy/th.mjs`) |
 | `footprint` | ≈ 3.4 × 1.8 m including customer zone | Floor plan on Home and Venue Partners | Measured footprint of the production unit |
 | `app` | Locker bank "BD-01", locker 12, PIN 4827, 14 available, "+66 •• ••• 1234", stored 3 h 12 min / THB 200 | Terminal-screen mockups on Home and How it works | Screens from the real terminal software once built, or leave as illustrative |
-| `profile` | `/company-profile.pdf` one-page stand-in, labelled "2.4 MB", dated 2026 | Home venue band; Venue Partners hero and "Documents" section | The real company profile PDF in `static/company-profile.pdf`; update `sizeLabel` to its actual size |
 | `portrait` | Locker-door monogram with the director's initials (no placeholder wording) | Company page, Director section | A portrait supplied by the founder: add a slot in `src/content/images.mjs`, then swap `monogram()` for `illustration()` in `pages.mjs → companyPage` |
 | `paymentMarks` | Typed "VISA", "Mastercard", "PromptPay" stand-ins | Footer on every page; Home pricing; Pricing page | Official Visa, Mastercard and PromptPay artwork used per each brand's guidelines (replace `paymentMarks()` in `components.mjs`) |
 | `legalUpdated` | "Last updated 19 September 2026" | Legal page hero | The date the legal adviser signs off the terms |
@@ -29,7 +28,7 @@ the copy string to edit is named too.
 
 These are tracked in `docs/INPUTS-REQUIRED.md` and are not invented anywhere on the site:
 
-- Domain email address (`hello@bagdrop.co.th` is used throughout). The LINE Official Account is now the real one, `@130keaga`, from the official QR in `brand_assets/line-qr.jpeg`.
+- The contact email is now the one in the company profile, `8venture.th@gmail.com`, and the site domain `bagdropth.com`. The LINE Official Account is now the real one, `@130keaga`, from the official QR in `brand_assets/line-qr.jpeg`.
 - Native Thai review of every string in `src/content/copy/th.mjs` (see `docs/th-copy-sheet.md`).
 - Legal review of the terms and PDPA notice, including the liability limit and prohibited-items list above.
 - Confirmation that the DBD DataWarehouse record is live, then set `company.dbdRecordLive = true` in `facts.mjs`.

@@ -38,7 +38,7 @@ export const company = {
   tel: { display: { en: '+66 97 792 9922', th: '097-792-9922', zh: '+66 97 792 9922' }, href: 'tel:+66977929922' },
 
   // PLACEHOLDER — client to supply a domain address. Never a Gmail address.
-  email: 'hello@bagdrop.co.th',
+  email: '8venture.th@gmail.com', // as published in the company profile
 
   // PLACEHOLDER — client to supply the LINE Official Account ID.
   // The account the official QR (brand_assets/line-qr.jpeg → lin.ee/sl6Wpin) opens.
@@ -83,7 +83,7 @@ export { placeholders } from './placeholders.mjs';
 export const paymentMarks = ['Visa', 'Mastercard', 'PromptPay'];
 
 export const site = {
-  origin: 'https://bagdrop.co.th',
+  origin: 'https://www.bagdropth.com', // the domain the company profile publishes
   defaultLang: 'en', // x-default → /en/ (client decision)
   // Chinese covers the traveller-facing pages only; see PAGES in render.mjs for
   // which page exists in which language. Elsewhere a Chinese visitor gets English.
